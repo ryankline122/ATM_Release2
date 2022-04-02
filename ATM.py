@@ -56,6 +56,59 @@ def createTable():
     if(not userExists("Dr. Nandigam")):
         createAccount("Dr. Nandigam", 35004, 1234, 1500.0)
 
+def createTransactionTable():
+    """
+    Creates a SQLite table for recent transactions of users
+    """
+    db = sqlite3.connect('user_info.db')
+    c = db.cursor()
+    c.execute("""CREATE TABLE IF NOT EXISTS transactions(
+                        name text,
+                        t1 text,
+                        t2 text,
+                        t3 text
+                        )""")
+    if (userExists("Ryan")):
+        createTransactionLog("Ryan", 0, 0, 0)
+    if (userExists("Logan")):
+        createTransactionLog("Logan", 0, 0, 0)
+    if (userExists("Selmir")):
+        createTransactionLog("Selmir", 0, 0, 0)
+    if (userExists("Dr. Nandigam")):
+        createTransactionLog("Logan", 0, 0, 0)
+    db.commit()
+    c.close()
+    db.close()
+
+
+def createTransactionLog(name, t1, t2, t3):
+    """
+    Takes information about users and adds them to the transactions table
+    """
+    db = sqlite3.connect('user_info.db')
+    c = db.cursor()
+    c.execute("INSERT INTO transactions VALUES(?,?,?,?)", (name, t1, t2, t3))
+    db.commit()
+    c.close()
+    db.close()
+
+
+def newTransaction(name, amount):
+    """
+    Takes in a values from the ATM and adds it to the current users transaction table
+    """
+    db = sqlite3.connect('user_info.db')
+    c = db.cursor()
+    c.execute("SELECT t1 FROM transactions WHERE name=?", (name,))
+    t1 = c.fetchone()[0]
+    c.execute("SELECT t2 FROM transactions WHERE name=?", (name,))
+    t2 = c.fetchone()[0]
+    c.execute("UPDATE transactions SET t1=? WHERE name=?", (amount, name))
+    c.execute("UPDATE transactions SET t2=? WHERE name=?", (t1, name))
+    c.execute("UPDATE transactions SET t3=? WHERE name=?", (t2, name))
+    db.commit()
+    c.close()
+    db.close()
 
 def createAccount(name, cardNum, PIN, balance):
     """
@@ -209,6 +262,8 @@ def printData():
     db = sqlite3.connect("user_info.db")
     c = db.cursor()
     c.execute("SELECT * FROM users")
+    print(c.fetchall())
+    c.execute("SELECT * FROM transactions")
     print(c.fetchall())
     c.close()
     db.close()
