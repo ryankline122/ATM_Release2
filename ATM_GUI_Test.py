@@ -7,6 +7,11 @@ from PIL import Image, ImageTk
 import ATM
 from tkinter.ttk import Progressbar
 
+
+from multiprocessing import Pool
+import sys
+import time
+
 cardUID = "0x40x130x840xb20x6f0x6f0x81"
 expectedCardNum = ATM.get_key(cardUID)
 ATM.login(expectedCardNum)
@@ -69,7 +74,7 @@ class StartPage(tk.Frame):
         nfc_label.place(x=357.5, y=175)
 
         button = tk.Button(self, text="Activate Scanner", padx=25, pady=25,
-               command=lambda: controller.show_frame("LoginPage"))
+               command=lambda:[controller.show_frame("LoginPage"), LoginPage.loop(0)])
         button.place(x=340, y=310)
 
 
@@ -161,26 +166,26 @@ class LoginPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        Secondary_label = Label(self, text="Waiting",
-                                bg='#FEFEFE', font=("Arial Bold", 15))
+
+
+    def loop(t): #waiting animation
+        Secondary_label = Label(root.frames["LoginPage"], text="Waiting",
+                    bg='#FEFEFE', font=("Arial Bold", 15))
         Secondary_label.place(x=295, y=145)
 
-        def loop(t): #waiting animation
-            if(t<12):
-                Secondary_label.config(text="Waiting" + "." * (t % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
-                self.after(500, loop, t+1)
-            else:
+        while t != 10:
+            Secondary_label.config(text="Waiting" + "." * (t % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
+            t+=1
+            print(t)
+            root.update()
+            time.sleep(0.5)
+        root.show_frame("WelcomePage")
 
-                controller.show_frame("WelcomePage")
-
-
-        def login():
-            ATM.logout()
-            cardUID = "0x40x130x840xb20x6f0x6f0x81" #change to ntag2.readCard()
-            expectedCardNum = ATM.get_key(cardUID)
-            ATM.login(expectedCardNum)
-
-        loop(t =0)
+        # def login():
+        #     ATM.logout()
+        #     cardUID = "0x40x130x840xb20x6f0x6f0x81" #change to ntag2.readCard()
+        #     expectedCardNum = ATM.get_key(cardUID)
+        #     ATM.login(expectedCardNum)
 
 if __name__ == "__main__":
     root = Controller()
