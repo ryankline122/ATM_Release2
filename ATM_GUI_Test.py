@@ -32,8 +32,6 @@ class Controller(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-
-
         self.frames = {}
         for F in (StartPage, WelcomePage, LoginPage, Dashboard, moneyMoves):
             page_name = F.__name__
@@ -43,7 +41,6 @@ class Controller(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("StartPage")
-
 
     def show_frame(self, page_name):
         #Show a frame for the given page name
@@ -84,6 +81,7 @@ class StartPage(tk.Frame):
         button.place(x=340, y=310)
 
 
+
 class WelcomePage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -95,7 +93,7 @@ class WelcomePage(tk.Frame):
         f3_canvas = Canvas(f3_frame, width=800, height=480, bg="white")
         f3_canvas.place(x=0, y=0)
 
-        main_label = Label(self, text="Hello " + ATM.currUser.name,
+        main_label = Label(self, text="Hello User",
                         bg='#FEFEFE', font=("Arial Bold", 25))
         main_label.place(x=315, y=20)
 
@@ -137,6 +135,7 @@ class Dashboard(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
         f4_frame = LabelFrame(self, width=800, height=480)
         f4_frame.pack(fill="both", expand=1)
 
@@ -194,25 +193,29 @@ class LoginPage(tk.Frame):
         self.controller = controller
 
 
-
-    def loop(t): #waiting animation
+    def loop(dots): #waiting animation
         Secondary_label = Label(root.frames["LoginPage"], text="Waiting",
                     bg='#FEFEFE', font=("Arial Bold", 15))
         Secondary_label.place(x=295, y=145)
 
-        while t != 4:
-            Secondary_label.config(text="Waiting" + "." * (t % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
-            t+=1
-            print(t)
+        while login():
+            Secondary_label.config(text="Waiting" + "." * (dots % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
+            dots+=1
             root.update()
             time.sleep(0.5)
         root.show_frame("WelcomePage")
 
-        # def login():
-        #     ATM.logout()
-        #     cardUID = "0x40x130x840xb20x6f0x6f0x81" #change to ntag2.readCard()
-        #     expectedCardNum = ATM.get_key(cardUID)
-        #     ATM.login(expectedCardNum)
+        Welcome_name_label = Label(root.frames["WelcomePage"], text="Hello " + ATM.currUser.name,
+                        bg='#FEFEFE', font=("Arial Bold", 25))
+        Welcome_name_label.place(x=315, y=20)
+        print(ATM.currUser.name)
+
+
+def login():
+    cardUID = "0x40x130x840xb20x6f0x6f0x81" #change to ntag2.readCard()
+    expectedCardNum = ATM.get_key(cardUID)
+    ATM.login(expectedCardNum)
+
 
 
 class moneyMoves(tk.Frame):

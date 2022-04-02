@@ -75,7 +75,7 @@ def createTransactionTable():
     if (userExists("Selmir")):
         createTransactionLog("Selmir", 0, 0, 0)
     if (userExists("Dr. Nandigam")):
-        createTransactionLog("Logan", 0, 0, 0)
+        createTransactionLog("Dr. Nandigam", 0, 0, 0)
     db.commit()
     c.close()
     db.close()
