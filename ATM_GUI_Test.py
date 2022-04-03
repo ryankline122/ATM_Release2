@@ -12,10 +12,6 @@ from multiprocessing import Pool
 import sys
 import time
 
-cardUID = "0x40xd60xf20xb20x6f0x6f0x80"
-expectedCardNum = ATM.get_key(cardUID)
-ATM.login(expectedCardNum)
-
 #class that controls frame switching
 class Controller(tk.Tk):
 
@@ -25,7 +21,7 @@ class Controller(tk.Tk):
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
         self.displayText = tk.StringVar()
-        self.displayText.set("${:,.2f}".format(ATM.currUser.balance))
+        # self.displayText.set("${:,.2f}".format(ATM.currUser.balance))
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
@@ -64,21 +60,19 @@ class StartPage(tk.Frame):
                            bg='#FEFEFE', font=("Arial Bold", 25))
         main_label.place(x=250, y=20)
 
-        info_label = Label(
-            self, text="Scan your card to login", bg='#FEFEFE', font=("Arial", 15))
-        info_label.place(x=300, y=100)
-
-        # NFC Image
-        nfcImg = Image.open('icon.png')
-        resized = nfcImg.resize((85, 65), Image.ANTIALIAS)
-        new_pic = ImageTk.PhotoImage(resized)
-
-        nfc_label = Label(self, image=new_pic, bg='#FEFEFE')
-        nfc_label.place(x=357.5, y=175)
-
-        button = tk.Button(self, text="Activate Scanner", padx=25, pady=25,
+        login_button = tk.Button(self, text="Login", padx=70, pady=25,
                command=lambda:[controller.show_frame("LoginPage"), LoginPage.loop(0)])
-        button.place(x=340, y=310)
+        login_button.place(x=320, y=170)
+
+        exit_button = tk.Button(self, text="Exit", padx=75, pady=25,
+                    command=lambda: powerOff())
+        exit_button.place(x=320, y=290)
+
+
+        def powerOff():
+            # GPIO.cleanup()
+            print("Shutting Down")
+            sys.exit()
 
 
 
@@ -92,10 +86,6 @@ class WelcomePage(tk.Frame):
 
         f3_canvas = Canvas(f3_frame, width=800, height=480, bg="white")
         f3_canvas.place(x=0, y=0)
-
-        main_label = Label(self, text="Hello User",
-                        bg='#FEFEFE', font=("Arial Bold", 25))
-        main_label.place(x=315, y=20)
 
 
         def togglePassword():
@@ -114,9 +104,9 @@ class WelcomePage(tk.Frame):
         Secondary_label.place(x=295, y=145)
 
 
-        viewPassBtn = tk.Button(self, text="Show Password", padx=25,pady=25, fg="white", bg='#343332',
+        viewPassBtn = tk.Button(self, text="Show Password", padx=25,pady=15, fg="white", bg='#343332',
                                 command=lambda:togglePassword())
-        viewPassBtn.place(x=100, y=180)
+        viewPassBtn.place(x=325, y=250)
 
         password = Entry(self, show="*", width=20, fg='black', font=('Arial 15'), borderwidth=2)
         password.place(x=290, y=205)
@@ -125,9 +115,17 @@ class WelcomePage(tk.Frame):
                                 command=lambda: controller.show_frame("StartPage"))
         backButton.place(x=30, y=380)
 
-        nextButton = tk.Button(self, text="Next", padx=50, pady=30, fg="white", bg='#1ebc3f',
-                                command=lambda: controller.show_frame("Dashboard"))
-        nextButton.place(x=565, y=180)
+        nextButton = tk.Button(self, text="Next", padx=55, pady=30, fg="white", bg='#1ebc3f',
+                                command=lambda: checkPIN())
+        nextButton.place(x=620, y=380)
+
+        def checkPIN():
+            input = password.get()
+            if(input == ATM.currUser.PIN):
+                controller.show_frame("Dashboard")
+            else:
+                messagebox.showerror("Input Error", "Incorrect PIN")
+            password.delete(0, END)
 
 #unfinished, just using to test old code with new class implementation
 class Dashboard(tk.Frame):
@@ -182,7 +180,7 @@ class Dashboard(tk.Frame):
         #changePasswordButton.place(x=450, y=240)
 
         logoutButton = tk.Button(self, text="logout", padx=10, pady=10, fg="white", bg='#da1723',
-                                 command=lambda: controller.show_frame("StartPage"))
+                                 command=lambda: [controller.show_frame("StartPage"), ATM.logoutAll()])
         logoutButton.place(x=30, y=10)
 
 
@@ -191,23 +189,33 @@ class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        f1_canvas = Canvas(self, width=800, height=480, bg="white")
+        f1_canvas.place(x=0, y=0)
+
+        global running
+        running =  False
+
+        main_label = Label(self, text="Please Scan Your Card",
+                           bg='#FEFEFE', font=("Arial Bold", 25))
+        main_label.place(x=220, y=20)
 
 
     def loop(dots): #waiting animation
         Secondary_label = Label(root.frames["LoginPage"], text="Waiting",
                     bg='#FEFEFE', font=("Arial Bold", 15))
-        Secondary_label.place(x=295, y=145)
-
-        while login():
-            Secondary_label.config(text="Waiting" + "." * (dots % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
+        Secondary_label.place(x=325, y=200)
+        
+        while dots < 4:
+            Secondary_label.config(text="Waiting" + "." * (dots % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 25))
             dots+=1
             root.update()
             time.sleep(0.5)
+        login()
         root.show_frame("WelcomePage")
 
         Welcome_name_label = Label(root.frames["WelcomePage"], text="Hello " + ATM.currUser.name,
                         bg='#FEFEFE', font=("Arial Bold", 25))
-        Welcome_name_label.place(x=315, y=20)
+        Welcome_name_label.place(x=300, y=20)
         print(ATM.currUser.name)
 
 
