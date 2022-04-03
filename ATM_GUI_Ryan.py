@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import font as tkfont
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
+import sys
 
 import RPi.GPIO as GPIO
 import pn532.pn532 as nfc
@@ -21,7 +22,6 @@ print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 # Configure PN532 to communicate with NTAG215 cards
 pn532.SAM_configuration()
 
-
 #class that controls frame switching
 class Controller(tk.Tk):
 
@@ -31,7 +31,7 @@ class Controller(tk.Tk):
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
         self.displayText = tk.StringVar()
-        # self.displayText.set(str("${:,.2f}".format(ATM.currUser.balance)))
+        # self.displayText.set("${:,.2f}".format(ATM.currUser.balance))
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
@@ -54,7 +54,6 @@ class Controller(tk.Tk):
         frame.tkraise()
 
 
-
 #startPage with activate scanner button
 class StartPage(tk.Frame):
 
@@ -71,25 +70,24 @@ class StartPage(tk.Frame):
                            bg='#FEFEFE', font=("Arial Bold", 25))
         main_label.place(x=250, y=20)
 
-        info_label = Label(
-            self, text="Scan your card to login", bg='#FEFEFE', font=("Arial", 15))
-        info_label.place(x=300, y=100)
-
-        # NFC Image
-        nfcImg = Image.open('icon.png')
-        resized = nfcImg.resize((85, 65), Image.ANTIALIAS)
-        new_pic = ImageTk.PhotoImage(resized)
-
-        nfc_label = Label(self, image=new_pic, bg='#FEFEFE')
-        nfc_label.place(x=357.5, y=175)
-
-        button = tk.Button(self, text="Activate Scanner", padx=25, pady=25,
+        login_button = tk.Button(self, text="Login", padx=70, pady=25,
                command=lambda:[controller.show_frame("LoginPage"), LoginPage.loop(0)])
-        button.place(x=340, y=310)
+        login_button.place(x=320, y=170)
+
+        exit_button = tk.Button(self, text="Exit", padx=75, pady=25,
+                    command=lambda: powerOff())
+        exit_button.place(x=320, y=290)
+
+
+        def powerOff():
+            # GPIO.cleanup()
+            print("Shutting Down")
+            sys.exit()
 
 
 
 class WelcomePage(tk.Frame):
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -116,21 +114,28 @@ class WelcomePage(tk.Frame):
         Secondary_label.place(x=295, y=145)
 
 
-        viewPassBtn = tk.Button(self, text="Show Password", padx=25,pady=25, fg="white", bg='#343332',
+        viewPassBtn = tk.Button(self, text="Show Password", padx=25,pady=15, fg="white", bg='#343332',
                                 command=lambda:togglePassword())
-        viewPassBtn.place(x=330, y=310)
+        viewPassBtn.place(x=325, y=250)
 
         password = Entry(self, show="*", width=20, fg='black', font=('Arial 15'), borderwidth=2)
         password.place(x=290, y=205)
 
-        backButton = tk.Button(self, text="Back", padx=50, pady=30, fg="white", bg='#da1723',
+        backButton = tk.Button(self, text="Cancel", padx=50, pady=30, fg="white", bg='#da1723',
                                 command=lambda: controller.show_frame("StartPage"))
-        backButton.place(x=90, y=180)
+        backButton.place(x=30, y=380)
 
-        nextButton = tk.Button(self, text="Next", padx=50, pady=30, fg="white", bg='#1ebc3f',
-                                command=lambda: controller.show_frame("Dashboard"))
-        nextButton.place(x=575, y=180)
+        nextButton = tk.Button(self, text="Next", padx=55, pady=30, fg="white", bg='#1ebc3f',
+                                command=lambda: checkPIN())
+        nextButton.place(x=620, y=380)
 
+        def checkPIN():
+            input = password.get()
+            if(input == ATM.currUser.PIN):
+                controller.show_frame("Dashboard")
+            else:
+                messagebox.showerror("Input Error", "Incorrect PIN")
+            password.delete(0, END)
 
 
 #unfinished, just using to test old code with new class implementation
@@ -186,8 +191,56 @@ class Dashboard(tk.Frame):
         #changePasswordButton.place(x=450, y=240)
 
         logoutButton = tk.Button(self, text="logout", padx=10, pady=10, fg="white", bg='#da1723',
-                                 command=lambda: controller.show_frame("StartPage"))
+                                 command=lambda: [controller.show_frame("StartPage"), ATM.logoutAll()])
         logoutButton.place(x=30, y=10)
+
+
+class LoginPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        f1_canvas = Canvas(self, width=800, height=480, bg="white")
+        f1_canvas.place(x=0, y=0)
+
+        main_label = Label(self, text="Please Scan Your Card",
+                           bg='#FEFEFE', font=("Arial Bold", 25))
+        main_label.place(x=220, y=20)
+
+        global Welcome_name_label
+        Welcome_name_label = Label(controller.frames["WelcomePage"], text="Hello ",
+                            bg='#FEFEFE', font=("Arial Bold", 25))
+        Welcome_name_label.place(x=315, y=20)
+
+        global Secondary_label
+        Secondary_label = Label(self, text="Waiting",
+                        bg='#FEFEFE', font=("Arial Bold", 15))
+        Secondary_label.place(x=295, y=145)
+
+
+    #waiting animation
+    def loop(dots): 
+        Secondary_label.config(text="Waiting")
+
+        while (True):
+            Secondary_label.config(text="Waiting" + "." * (dots % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
+            dots+=1
+            root.update()
+            time.sleep(0.5)
+            uid = pn532.read_passive_target(timeout=0.5)            
+            if uid is not None:
+                break
+            
+        uidArr = [hex(i) for i in uid]
+        uidStr = ""
+
+        for i in uidArr:
+            uidStr += str(i)
+
+        login(uidStr)
+        print(str(ATM.currUser.name))
+        Welcome_name_label.config(text= str(ATM.currUser.name))
+        root.show_frame("WelcomePage")
 
 
 class moneyMoves(tk.Frame):
@@ -260,48 +313,6 @@ class moneyMoves(tk.Frame):
 
     def update_p2_label(self):
         self.controller.displayText.set("${:,.2f}".format(ATM.currUser.balance))
-
-
-class LoginPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-
-        global Welcome_name_label
-        Welcome_name_label = Label(controller.frames["WelcomePage"], text="Hello ",
-                            bg='#FEFEFE', font=("Arial Bold", 25))
-        Welcome_name_label.place(x=315, y=20)
-
-        global Secondary_label
-        Secondary_label = Label(self, text="Waiting",
-                        bg='#FEFEFE', font=("Arial Bold", 15))
-        Secondary_label.place(x=295, y=145)
-
-
-    #waiting animation
-    def loop(dots): 
-        Secondary_label.config(text="Waiting")
-
-        while (True):
-            Secondary_label.config(text="Waiting" + "." * (dots % 3 + 1), bg='#FEFEFE', font=("Arial Bold", 35))
-            dots+=1
-            root.update()
-            time.sleep(0.5)
-            uid = pn532.read_passive_target(timeout=0.5)            
-            if uid is not None:
-                break
-            
-        uidArr = [hex(i) for i in uid]
-        uidStr = ""
-
-        for i in uidArr:
-            uidStr += str(i)
-
-        login(uidStr)
-        print(str(ATM.currUser.name))
-        Welcome_name_label.config(text= str(ATM.currUser.name))
-        root.show_frame("WelcomePage")
-
 
 
 
