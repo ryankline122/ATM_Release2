@@ -21,7 +21,7 @@ class Controller(tk.Tk):
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
         self.displayText = tk.StringVar()
-        # self.displayText.set("${:,.2f}".format(ATM.currUser.balance))
+        #self.displayText.set("${:,.2f}".format(ATM.currUser.balance)) change to be set right after login
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
@@ -43,6 +43,13 @@ class Controller(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+    def login(self):
+        cardUID = "0x40x130x840xb20x6f0x6f0x81"  # change to ntag2.readCard()
+        expectedCardNum = ATM.get_key(cardUID)
+        ATM.login(expectedCardNum)
+        self.displayText.set("${:,.2f}".format(ATM.currUser.balance))
+
+
 
 #startPage with activate scanner button
 class StartPage(tk.Frame):
@@ -61,7 +68,7 @@ class StartPage(tk.Frame):
         main_label.place(x=250, y=20)
 
         login_button = tk.Button(self, text="Login", padx=70, pady=25,
-               command=lambda:[controller.show_frame("LoginPage"), LoginPage.loop(0)])
+               command=lambda:[controller.show_frame("LoginPage"), LoginPage.loop(self,0)])
         login_button.place(x=320, y=170)
 
         exit_button = tk.Button(self, text="Exit", padx=75, pady=25,
@@ -200,7 +207,7 @@ class LoginPage(tk.Frame):
         main_label.place(x=220, y=20)
 
 
-    def loop(dots): #waiting animation
+    def loop(self,dots): #waiting animation
         Secondary_label = Label(root.frames["LoginPage"], text="Waiting",
                     bg='#FEFEFE', font=("Arial Bold", 15))
         Secondary_label.place(x=325, y=200)
@@ -210,7 +217,7 @@ class LoginPage(tk.Frame):
             dots+=1
             root.update()
             time.sleep(0.5)
-        login()
+        self.controller.login()
         root.show_frame("WelcomePage")
 
         Welcome_name_label = Label(root.frames["WelcomePage"], text="Hello " + ATM.currUser.name,
@@ -219,10 +226,10 @@ class LoginPage(tk.Frame):
         print(ATM.currUser.name)
 
 
-def login():
-    cardUID = "0x40x130x840xb20x6f0x6f0x81" #change to ntag2.readCard()
-    expectedCardNum = ATM.get_key(cardUID)
-    ATM.login(expectedCardNum)
+#def login():
+    #cardUID = "0x40x130x840xb20x6f0x6f0x81" #change to ntag2.readCard()
+    #expectedCardNum = ATM.get_key(cardUID)
+    #ATM.login(expectedCardNum)
 
 
 
