@@ -298,7 +298,7 @@ class DepositFrame(tk.Frame):
             """
             money = amount_entry.get()
             try:
-                ATM.currUser.withdraw(float(money))
+                ATM.currUser.deposit(float(money))
                 update_p2_label(self)
                 ATM.updateBalance()
                 controller.show_frame("Dashboard")
