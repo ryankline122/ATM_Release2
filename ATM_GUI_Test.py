@@ -32,7 +32,7 @@ class Controller(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, WelcomePage, LoginPage, Dashboard, moneyMoves, DepositFrame, WithdrawFrame):
+        for F in (StartPage, WelcomePage, LoginPage, Dashboard, moneyMoves, DepositFrame, WithdrawFrame, TransferFrame):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -167,7 +167,8 @@ class Dashboard(tk.Frame):
         depositWithdraw_button.place(x=100, y=250)
 
         transfer_button = tk.Button(
-            self, text="Transfer To Another User", padx=40, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10))
+            self, text="Transfer To Another User", padx=40, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("TransferFrame"))
         transfer_button.place(x=100, y=350)
 
         transfer_button = tk.Button(
@@ -249,6 +250,10 @@ class moneyMoves(tk.Frame):
             command=lambda: controller.show_frame("WithdrawFrame"))
         withdraw_button.place(x=475, y=300)
 
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
 
 class DepositFrame(tk.Frame):
 
@@ -274,19 +279,18 @@ class DepositFrame(tk.Frame):
                               padx=10, pady=10, bg="white", font=("Arial Bold", 15))
         moneyTransfer.place(x=300, y=175)
 
-        amount_entry = Entry(self, width=20, fg='black', text="$",
+        amount_entry = Entry(self, width=20, fg='black',
                              font=('Arial 15'), borderwidth=2)
-        amount_entry.place(x=290, y=220)
+        amount_entry.place(x=290, y=240)
 
-        cancel_button = tk.Button(
+        submit_button = tk.Button(
             self, text="Confirm", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
             command=lambda: deposit())
-        cancel_button.place(x=475, y=300)
+        submit_button.place(x=310, y=300)
 
-        cancel_button = tk.Button(
-            self, text="Cancel", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
-            command=lambda: controller.show_frame("moneyMoves"))
-        cancel_button.place(x=150, y=300)
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
 
         def deposit():
             """
@@ -294,14 +298,14 @@ class DepositFrame(tk.Frame):
             """
             money = amount_entry.get()
             try:
-                ATM.currUser.deposit(float(money))
+                ATM.currUser.withdraw(float(money))
+                update_p2_label(self)
+                ATM.updateBalance()
+                controller.show_frame("Dashboard")
             except ValueError:
                 messagebox.showerror("Error",
                                      "Invalid Input")
             amount_entry.delete(0, END)
-            update_p2_label(self)
-            ATM.updateBalance()
-            controller.show_frame("Dashboard")
 
         def update_p2_label(self):
             self.controller.displayText.set(
@@ -330,21 +334,20 @@ class WithdrawFrame(tk.Frame):
 
         moneyTransfer = Label(self, text="Amount to Withdraw:",
                               padx=10, pady=10, bg="white", font=("Arial Bold", 15))
-        moneyTransfer.place(x=300, y=175)
+        moneyTransfer.place(x=290, y=175)
 
-        amount_entry = Entry(self, width=20, fg='black', text="$",
+        amount_entry = Entry(self, width=20, fg='black',
                              font=('Arial 15'), borderwidth=2)
-        amount_entry.place(x=290, y=220)
+        amount_entry.place(x=290, y=240)
 
-        cancel_button = tk.Button(
+        submit_button = tk.Button(
             self, text="Confirm", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
             command=lambda: withdraw())
-        cancel_button.place(x=475, y=300)
+        submit_button.place(x=310, y=300)
 
-        cancel_button = tk.Button(
-            self, text="Cancel", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
-            command=lambda: controller.show_frame("moneyMoves"))
-        cancel_button.place(x=150, y=300)
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
 
         def withdraw():
             """
@@ -353,13 +356,87 @@ class WithdrawFrame(tk.Frame):
             money = amount_entry.get()
             try:
                 ATM.currUser.withdraw(float(money))
+                update_p2_label(self)
+                ATM.updateBalance()
+                controller.show_frame("Dashboard")
             except ValueError:
                 messagebox.showerror("Error",
                                      "Invalid Input")
             amount_entry.delete(0, END)
-            update_p2_label(self)
-            ATM.updateBalance()
-            controller.show_frame("Dashboard")
+
+        def update_p2_label(self):
+            self.controller.displayText.set(
+                "${:,.2f}".format(ATM.currUser.balance))
+
+
+class TransferFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        transfer_frame = LabelFrame(self, width=800, height=480)
+        transfer_frame.pack(fill="both", expand=1)
+
+        transfer_canvas = Canvas(self, width=800, height=480, bg="white")
+        transfer_canvas.place(x=0, y=0)
+
+        balanceLabel = Label(
+            self, text="Available Balance", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        balanceLabel.place(x=260, y=10)
+
+        checkingAccountBalanceLabel = Label(
+            self, textvariable=controller.displayText, bg="white", font=("Arial Bold", 20))
+        checkingAccountBalanceLabel.place(x=340, y=80)
+
+        moneyTransfer = Label(self, text="Account Number of Recipient:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=270, y=150)
+
+        # Entry Fields
+        accountNum_entry = Entry(
+            self, width=20, fg='black', font=('Arial 15'), borderwidth=2)
+        amount_entry = Entry(self, width=20, fg='black',
+                             font=('Arial 15'), borderwidth=2)
+        accountNum_entry.place(x=290, y=200)
+        amount_entry.place(x=290, y=300)
+
+        moneyTransfer = Label(self, text="Amount to be Transferred:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=270, y=250)
+
+        submit_button = tk.Button(
+            self, text="Confirm", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: transfer())
+        submit_button.place(x=310, y=390)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def transfer():
+            """
+             Handles the deposit/withdraw functionality
+            """
+            recipient = accountNum_entry.get()
+            money = amount_entry.get()
+            try:
+                if(str(recipient) != str(ATM.currUser.cardNum)):
+                    ATM.currUser.transfer(money, recipient)
+                    update_p2_label(self)
+                    ATM.updateBalance()
+                    controller.show_frame("Dashboard")
+                else:
+                    messagebox.showerror("Error",
+                                         "Cannot Transfer to yourself")
+            except ValueError:
+                messagebox.showerror("Error",
+                                     "Invalid Input")
+            except Exception:
+                accountNum_entry.delete(0, END)
+                messagebox.showerror("Error", "Invalid Account Number")
+            amount_entry.delete(0, END)
+            accountNum_entry.delete(0, END)
 
         def update_p2_label(self):
             self.controller.displayText.set(

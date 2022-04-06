@@ -72,10 +72,11 @@ class User:
         if (ATM.userExists(recipient) and float(amount) > 0 and float(amount) <= self.balance):
             db = sqlite3.connect('user_info.db')
             c = db.cursor()
-            c.execute("SELECT balance FROM users where name=?", (recipient,))
+            c.execute("SELECT balance FROM users where cardNum=?", (recipient,))
             balance = c.fetchone()[0]
             balance += float(amount)
-            c.execute("UPDATE users SET balance =? WHERE name =?", (balance, recipient,))
+            c.execute("UPDATE users SET balance =? WHERE cardNum =?",
+                      (balance, recipient,))
             db.commit()
             c.close()
             db.close()
@@ -83,8 +84,8 @@ class User:
         else:
             raise Exception("Recipient does not exist or Invalid Balance")
 
-
     # TODO: Change to "changePIN(self, newPIN)"
+
     def changePassword(self, newPassword):
         """
         Allows user to change their password
@@ -95,7 +96,8 @@ class User:
         self.password = newPassword
         db = sqlite3.connect('user_info.db')
         c = db.cursor()
-        c.execute("UPDATE users SET password =? WHERE userID =?", (newPassword, self.userID,))
+        c.execute("UPDATE users SET password =? WHERE userID =?",
+                  (newPassword, self.userID,))
         db.commit()
         c.close()
         db.close()

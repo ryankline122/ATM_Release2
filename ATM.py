@@ -28,6 +28,7 @@ cards = {
     35004: "0x40x490x6f0xb20x6f0x6f0x81",
 }
 
+
 def get_key(val):
     for key, value in cards.items():
         if val == value:
@@ -55,6 +56,7 @@ def createTable():
         createAccount("Selmir", 35003, 1234, 1500.0)
     if(not userExists("Dr. Nandigam")):
         createAccount("Dr. Nandigam", 35004, 1234, 1500.0)
+
 
 def createTransactionTable():
     """
@@ -109,6 +111,7 @@ def newTransaction(name, amount):
     db.commit()
     c.close()
     db.close()
+
 
 def createAccount(name, cardNum, PIN, balance):
     """
@@ -203,11 +206,11 @@ def updateBalance():
     """
     db = sqlite3.connect('user_info.db')
     c = db.cursor()
-    c.execute("UPDATE users SET balance =? WHERE cardNum =?", (currUser.balance, currUser.cardNum,))
+    c.execute("UPDATE users SET balance =? WHERE cardNum =?",
+              (currUser.balance, currUser.cardNum,))
     db.commit()
     c.close()
     db.close()
-
 
 
 # TODO: Change to forgotPIN(name, currPIN, newPIN)
@@ -228,7 +231,8 @@ def forgotPassword(userID, PIN, newPassword):
     usrPIN = c.fetchone()[0]
 
     if PIN == usrPIN:
-        c.execute("UPDATE users SET password=? WHERE userID=?", (newPassword, userID,))
+        c.execute("UPDATE users SET password=? WHERE userID=?",
+                  (newPassword, userID,))
         db.commit()
     else:
         raise ValueError
@@ -236,7 +240,7 @@ def forgotPassword(userID, PIN, newPassword):
     db.close()
 
 
-def userExists(name):
+def userExists(cardNum):
     """
     Checks if the given userID exists in the database
 
@@ -246,8 +250,8 @@ def userExists(name):
     """
     db = sqlite3.connect('user_info.db')
     c = db.cursor()
-    c.execute("SELECT name FROM users")
-    (c.execute("SELECT exists(SELECT name FROM users where name=?)", (name,)))
+    c.execute("SELECT cardNum FROM users")
+    (c.execute("SELECT exists(SELECT name FROM users where cardNum=?)", (cardNum,)))
     [exists] = c.fetchone()
 
     return exists
@@ -275,7 +279,8 @@ def logoutAll():
     """
     db = sqlite3.connect("user_info.db")
     c = db.cursor()
-    c.execute("UPDATE users SET loginStatus =? where loginStatus =?", ("False", "True",))
+    c.execute("UPDATE users SET loginStatus =? where loginStatus =?",
+              ("False", "True",))
     db.commit()
     c.close()
     db.close()
