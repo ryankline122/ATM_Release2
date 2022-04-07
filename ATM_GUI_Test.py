@@ -32,7 +32,9 @@ class Controller(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, WelcomePage, LoginPage, Dashboard, moneyMoves, DepositFrame, WithdrawFrame, TransferFrame):
+        for F in (StartPage, WelcomePage, LoginPage, Dashboard, 
+                moneyMoves, DepositFrame, WithdrawFrame, TransferFrame,
+                TransactionsFrame):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -172,7 +174,8 @@ class Dashboard(tk.Frame):
         transfer_button.place(x=100, y=350)
 
         transfer_button = tk.Button(
-            self, text="Recent Transactions", padx=45, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10))
+            self, text="Recent Transactions", padx=45, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),  
+            command=lambda: controller.show_frame("TransactionsFrame"))
         transfer_button.place(x=475, y=250)
 
         PIN_button = tk.Button(
@@ -441,6 +444,75 @@ class TransferFrame(tk.Frame):
         def update_p2_label(self):
             self.controller.displayText.set(
                 "${:,.2f}".format(ATM.currUser.balance))
+
+
+class TransactionsFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        transaction_frame = LabelFrame(self, width=800, height=480)
+        transaction_frame.pack(fill="both", expand=1)
+
+        transaction_canvas = Canvas(self, width=800, height=480, bg="white")
+        transaction_canvas.place(x=0, y=0)
+
+        header_label = Label(
+            self, text="Recent Transactions", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        header_label.place(x=245, y=10)
+
+        heading1_label = Label(
+             self, text="Amount:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        heading1_label.place(x=250, y=100)
+
+        heading2_label = Label(
+             self, text="Initiated By:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        heading2_label.place(x=450, y=100)
+
+
+        # Transaction Labels
+        t1_amount_label = Label(
+             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t1_amount_label.place(x=250, y=150)
+
+        t1_User_label = Label(
+             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t1_User_label.place(x=450, y=150)
+
+        t2_amount_label = Label(
+             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t2_amount_label.place(x=250, y=200)
+
+        t2_User_label = Label(
+             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t2_User_label.place(x=450, y=200)
+
+        t3_amount_label = Label(
+             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t3_amount_label.place(x=250, y=250)
+
+        t3_User_label = Label(
+             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t3_User_label.place(x=450, y=250)
+        
+
+        submit_button = tk.Button(
+            self, text="OK", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("Dashboard"))
+        submit_button.place(x=340, y=390)
+
+        # backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+        #                        command=lambda: [controller.show_frame("Dashboard")])
+        # backButton.place(x=30, y=10)
 
 
 if __name__ == "__main__":
