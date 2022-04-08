@@ -86,18 +86,18 @@ class User:
 
     # TODO: Change to "changePIN(self, newPIN)"
 
-    def changePassword(self, newPassword):
+    def changePassword(self, newPIN):
         """
         Allows user to change their password
 
         :param newPassword: The desired password for the user
         :type newPassword: str
         """
-        self.password = newPassword
+        self.newPIN = newPIN
         db = sqlite3.connect('user_info.db')
         c = db.cursor()
-        c.execute("UPDATE users SET password =? WHERE userID =?",
-                  (newPassword, self.userID,))
+        c.execute("UPDATE users SET PIN =? WHERE cardNUM =?",
+                  (newPIN, self.cardNum,))
         db.commit()
         c.close()
         db.close()

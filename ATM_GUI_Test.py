@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import font as tkfont
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-#import ntag2
+# import ntag2
 import ATM
 
 
@@ -32,9 +32,9 @@ class Controller(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, WelcomePage, LoginPage, Dashboard, 
-                moneyMoves, DepositFrame, WithdrawFrame, TransferFrame,
-                TransactionsFrame):
+        for F in (StartPage, WelcomePage, LoginPage, Dashboard,
+                  moneyMoves, DepositFrame, WithdrawFrame, TransferFrame,
+                  TransactionsFrame, PINChangeFrame1, PINChangeFrame2):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -174,12 +174,13 @@ class Dashboard(tk.Frame):
         transfer_button.place(x=100, y=350)
 
         transfer_button = tk.Button(
-            self, text="Recent Transactions", padx=45, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),  
+            self, text="Recent Transactions", padx=45, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
             command=lambda: controller.show_frame("TransactionsFrame"))
         transfer_button.place(x=475, y=250)
 
         PIN_button = tk.Button(
-            self, text="Change PIN", padx=71, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10))
+            self, text="Change PIN", padx=71, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("PINChangeFrame1"))
         PIN_button.place(x=475, y=350)
 
         logoutButton = tk.Button(self, text="Logout", padx=10, pady=10, font=("Arial Bold", 10),
@@ -463,56 +464,175 @@ class TransactionsFrame(tk.Frame):
         header_label.place(x=245, y=10)
 
         heading1_label = Label(
-             self, text="Amount:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="Amount:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         heading1_label.place(x=250, y=100)
 
         heading2_label = Label(
-             self, text="Initiated By:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="Initiated By:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         heading2_label.place(x=450, y=100)
 
-
         # Transaction Labels
         t1_amount_label = Label(
-             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         t1_amount_label.place(x=250, y=150)
 
         t1_User_label = Label(
-             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         t1_User_label.place(x=450, y=150)
 
         t2_amount_label = Label(
-             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         t2_amount_label.place(x=250, y=200)
 
         t2_User_label = Label(
-             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         t2_User_label.place(x=450, y=200)
 
         t3_amount_label = Label(
-             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         t3_amount_label.place(x=250, y=250)
 
         t3_User_label = Label(
-             self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
         )
         t3_User_label.place(x=450, y=250)
-        
 
         submit_button = tk.Button(
             self, text="OK", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
             command=lambda: controller.show_frame("Dashboard"))
         submit_button.place(x=340, y=390)
 
-        # backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
-        #                        command=lambda: [controller.show_frame("Dashboard")])
-        # backButton.place(x=30, y=10)
+
+class PINChangeFrame1(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        PIN_frame = LabelFrame(self, width=800, height=480)
+        PIN_frame.pack(fill="both", expand=1)
+
+        PIN_canvas = Canvas(self, width=800, height=480, bg="white")
+        PIN_canvas.place(x=0, y=0)
+
+        Secondary_label = Label(self, text="Enter Current PIN",
+                                bg='#FEFEFE', font=("Arial Bold", 15))
+        Secondary_label.place(x=295, y=145)
+
+        viewPassBtn = tk.Button(self, text="Show", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
+                                command=lambda: togglePassword())
+        viewPassBtn.place(x=575, y=180)
+
+        password = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
+        password.place(x=290, y=205)
+
+        nextButton = tk.Button(self, text="Next", padx=55, pady=30, font=("Arial Bold", 10),
+                               command=lambda: checkPIN())
+        nextButton.place(x=315, y=380)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("PINChangeFrame2")])
+        backButton.place(x=30, y=10)
+
+        def togglePassword():
+            """
+            Allows user to toggle between show/hide password in the input box
+            """
+            if password.cget("show") == '*':
+                password.config(show='')
+                viewPassBtn.config(text='Hide')
+            else:
+                password.config(show='*')
+                viewPassBtn.config(text='Show')
+
+        def checkPIN():
+            input = password.get()
+            if(input == ATM.currUser.PIN):
+                controller.show_frame("PINChangeFrame2")
+            else:
+                messagebox.showerror("Input Error", "Incorrect PIN")
+            password.delete(0, END)
+
+
+class PINChangeFrame2(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        PIN_frame = LabelFrame(self, width=800, height=480)
+        PIN_frame.pack(fill="both", expand=1)
+
+        PIN_canvas = Canvas(self, width=800, height=480, bg="white")
+        PIN_canvas.place(x=0, y=0)
+
+        Secondary_label = Label(self, text="Enter New PIN",
+                                bg='#FEFEFE', font=("Arial Bold", 15))
+        Secondary_label.place(x=295, y=100)
+
+        newPIN_1 = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
+        newPIN_1.place(x=290, y=150)
+
+        confirm_label = Label(self, text="Confirm Your New PIN",
+                              bg='#FEFEFE', font=("Arial Bold", 15))
+        confirm_label.place(x=295, y=200)
+
+        newPIN_2 = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
+        newPIN_2.place(x=290, y=250)
+
+        viewPassBtn = tk.Button(self, text="Show", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
+                                command=lambda: togglePassword())
+        viewPassBtn.place(x=575, y=180)
+
+        nextButton = tk.Button(self, text="Done", padx=55, pady=30, font=("Arial Bold", 10),
+                               command=lambda: checkPIN())
+        nextButton.place(x=315, y=380)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def togglePassword():
+            """
+            Allows user to toggle between show/hide password in the input box
+            """
+            if newPIN_1.cget("show") == '*':
+                newPIN_1.config(show='')
+                newPIN_2.config(show='')
+                viewPassBtn.config(text='Hide PIN')
+            else:
+                newPIN_1.config(show='*')
+                newPIN_2.config(show='*')
+                viewPassBtn.config(text='Show PIN')
+
+        def checkPIN():
+            PIN_1 = newPIN_1.get()
+            PIN_2 = newPIN_2.get()
+            if(PIN_1 == ATM.currUser.PIN):
+                messagebox.showerror(
+                    "Input Error", "New PIN is the same as the current PIN")
+            elif(PIN_1 != PIN_2):
+                messagebox.showerror("Input Error", "PINs don't match")
+            elif(len(PIN_1) > 10):
+                messagebox.showerror(
+                    "Input Error", "New PIN is too long. 9 digit max")
+            else:
+                ATM.currUser.changePassword(PIN_1)
+                print("New PIN: " + ATM.currUser.PIN)
+                messagebox.showinfo("Success", "PIN has been updated")
+                controller.show_frame("Dashboard")
+            newPIN_1.delete(0, END)
+            newPIN_2.delete(0, END)
 
 
 if __name__ == "__main__":
