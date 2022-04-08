@@ -81,7 +81,6 @@ class StartPage(tk.Frame):
 
         def powerOff():
             # GPIO.cleanup()
-            print("Shutting Down")
             sys.exit()
 
 
@@ -217,7 +216,6 @@ class LoginPage(tk.Frame):
         Welcome_name_label = Label(root.frames["WelcomePage"], text="Hello " + ATM.currUser.name,
                                    bg='#FEFEFE', font=("Arial Bold", 25))
         Welcome_name_label.place(x=300, y=20)
-        print(ATM.currUser.name)
 
 
 class moneyMoves(tk.Frame):
@@ -538,7 +536,6 @@ class PINChangeFrame1(tk.Frame):
                                command=lambda: checkPIN())
         nextButton.place(x=315, y=380)
 
-        # TODO: fix show_frame button
         backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
                                command=lambda: [controller.show_frame("Dashboard")])
         backButton.place(x=30, y=10)
@@ -627,6 +624,9 @@ class PINChangeFrame2(tk.Frame):
             elif(len(PIN_1) > 10):
                 messagebox.showerror(
                     "Input Error", "New PIN is too long. 9 digit max")
+            elif(not PIN_1.isdigit()):
+                messagebox.showerror(
+                    "Input Error", "PIN must be made up of digits")
             else:
                 ATM.currUser.changePassword(PIN_1)
                 messagebox.showinfo("Success", "PIN has been updated")
