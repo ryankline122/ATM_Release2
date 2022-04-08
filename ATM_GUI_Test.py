@@ -538,8 +538,9 @@ class PINChangeFrame1(tk.Frame):
                                command=lambda: checkPIN())
         nextButton.place(x=315, y=380)
 
+        # TODO: fix show_frame button
         backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
-                               command=lambda: [controller.show_frame("PINChangeFrame2")])
+                               command=lambda: [controller.show_frame("Dashboard")])
         backButton.place(x=30, y=10)
 
         def togglePassword():
@@ -628,7 +629,6 @@ class PINChangeFrame2(tk.Frame):
                     "Input Error", "New PIN is too long. 9 digit max")
             else:
                 ATM.currUser.changePassword(PIN_1)
-                print("New PIN: " + ATM.currUser.PIN)
                 messagebox.showinfo("Success", "PIN has been updated")
                 controller.show_frame("Dashboard")
             newPIN_1.delete(0, END)
