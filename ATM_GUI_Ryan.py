@@ -1,15 +1,13 @@
 from tkinter import *
-
-import tkinter as tk
 from tkinter import font as tkfont
-from PIL import Image, ImageTk
-from tkinter import ttk, messagebox
+from tkinter import messagebox
+import tkinter as tk
+
 import RPi.GPIO as GPIO
-import pn532.pn532 as nfc
 from pn532 import *
+
 import ATM
 import sqlite3
-
 import sys
 import time
 
@@ -19,7 +17,6 @@ ATM.createTransactionTable()
 
 pn532 = PN532_SPI(cs=4, reset=20, debug=False)
 ic, ver, rev, support = pn532.get_firmware_version()
-print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 
 # Configure PN532 to communicate with NTAG215 cards
 pn532.SAM_configuration()
@@ -133,7 +130,6 @@ class WelcomePage(tk.Frame):
                 messagebox.showerror("Input Error", "Incorrect PIN")
             password.delete(0, END)
 
-# unfinished, just using to test old code with new class implementation
 
 
 class Dashboard(tk.Frame):
@@ -230,7 +226,6 @@ class LoginPage(tk.Frame):
             uidStr += str(i)
 
         login(uidStr)
-        print(str(ATM.currUser.name))
         Welcome_name_label.config(text= "Hello " + str(ATM.currUser.name))
         root.show_frame("WelcomePage")
 
