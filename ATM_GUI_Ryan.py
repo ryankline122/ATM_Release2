@@ -4,14 +4,12 @@ import tkinter as tk
 from tkinter import font as tkfont
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-import sys
-
 import RPi.GPIO as GPIO
 import pn532.pn532 as nfc
+from pn532 import *
 import ATM
 
-
-from pn532 import *
+import sys
 import time
 
 
@@ -22,16 +20,14 @@ print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 # Configure PN532 to communicate with NTAG215 cards
 pn532.SAM_configuration()
 
-#class that controls frame switching
 class Controller(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-
+        self.title_font = tkfont.Font(
+            family='Helvetica', size=18, weight="bold", slant="italic")
         self.displayText = tk.StringVar()
-        # self.displayText.set("${:,.2f}".format(ATM.currUser.balance))
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
@@ -39,7 +35,9 @@ class Controller(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, WelcomePage, LoginPage, Dashboard, moneyMoves):
+        for F in (StartPage, WelcomePage, LoginPage, Dashboard,
+                  moneyMoves, DepositFrame, WithdrawFrame, TransferFrame,
+                  TransactionsFrame, PINChangeFrame1, PINChangeFrame2):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -49,12 +47,10 @@ class Controller(tk.Tk):
         self.show_frame("StartPage")
 
     def show_frame(self, page_name):
-        #Show a frame for the given page name
         frame = self.frames[page_name]
         frame.tkraise()
 
 
-#startPage with activate scanner button
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -70,20 +66,17 @@ class StartPage(tk.Frame):
                            bg='#FEFEFE', font=("Arial Bold", 25))
         main_label.place(x=250, y=20)
 
-        login_button = tk.Button(self, text="Login", padx=70, pady=25,
-               command=lambda:[controller.show_frame("LoginPage"), LoginPage.loop(0)])
+        login_button = tk.Button(self, text="Login", padx=70, pady=25, font=("Arial Bold", 10),
+                                 command=lambda: [controller.show_frame("LoginPage"), LoginPage.loop(0)])
         login_button.place(x=320, y=170)
 
-        exit_button = tk.Button(self, text="Exit", padx=75, pady=25,
-                    command=lambda: powerOff())
+        exit_button = tk.Button(self, text="Exit", padx=75, pady=25, font=("Arial Bold", 10),
+                                command=lambda: powerOff())
         exit_button.place(x=320, y=290)
 
-
         def powerOff():
-            # GPIO.cleanup()
-            print("Shutting Down")
+            GPIO.cleanup()
             sys.exit()
-
 
 
 class WelcomePage(tk.Frame):
@@ -97,7 +90,6 @@ class WelcomePage(tk.Frame):
         f3_canvas = Canvas(f3_frame, width=800, height=480, bg="white")
         f3_canvas.place(x=0, y=0)
 
-
         def togglePassword():
             """
             Allows user to toggle between show/hide password in the input box
@@ -110,23 +102,23 @@ class WelcomePage(tk.Frame):
                 viewPassBtn.config(text='Show Password')
 
         Secondary_label = Label(self, text="Please Enter Your PIN",
-                           bg='#FEFEFE', font=("Arial Bold", 15))
+                                bg='#FEFEFE', font=("Arial Bold", 15))
         Secondary_label.place(x=295, y=145)
 
-
-        viewPassBtn = tk.Button(self, text="Show Password", padx=25,pady=15, fg="white", bg='#343332',
-                                command=lambda:togglePassword())
+        viewPassBtn = tk.Button(self, text="Show Password", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
+                                command=lambda: togglePassword())
         viewPassBtn.place(x=325, y=250)
 
-        password = Entry(self, show="*", width=20, fg='black', font=('Arial 15'), borderwidth=2)
+        password = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
         password.place(x=290, y=205)
 
-        backButton = tk.Button(self, text="Cancel", padx=50, pady=30, fg="white", bg='#da1723',
-                                command=lambda: controller.show_frame("StartPage"))
+        backButton = tk.Button(self, text="Cancel", padx=50, pady=30, font=("Arial Bold", 10),
+                               command=lambda: controller.show_frame("StartPage"))
         backButton.place(x=30, y=380)
 
-        nextButton = tk.Button(self, text="Next", padx=55, pady=30, fg="white", bg='#1ebc3f',
-                                command=lambda: checkPIN())
+        nextButton = tk.Button(self, text="Next", padx=55, pady=30, font=("Arial Bold", 10),
+                               command=lambda: checkPIN())
         nextButton.place(x=620, y=380)
 
         def checkPIN():
@@ -137,8 +129,9 @@ class WelcomePage(tk.Frame):
                 messagebox.showerror("Input Error", "Incorrect PIN")
             password.delete(0, END)
 
+# unfinished, just using to test old code with new class implementation
 
-#unfinished, just using to test old code with new class implementation
+
 class Dashboard(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -148,55 +141,50 @@ class Dashboard(tk.Frame):
         f4_frame = LabelFrame(self, width=800, height=480)
         f4_frame.pack(fill="both", expand=1)
 
-        f4_canvas = Canvas(f4_frame, width=800, height=480, bg="white")
+        f4_canvas = Canvas(self, width=800, height=480, bg="white")
         f4_canvas.place(x=0, y=0)
 
-        # Define a Canvas Widget
-        canvasT4 = Canvas(f4_frame, width=800, height=400, bg='#75706F')
-        canvasT4.place(x=0, y=0)
+        balanceLabel = Label(
+            self, text="Account Balance", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        balanceLabel.place(x=275, y=10)
 
-        canvasT2 = Canvas(f4_frame, width=390, height=150, bg='#343332')
-        canvasT2.place(x=210, y=5)
+        checkingAccountBalanceLabel = Label(
+            self, textvariable=controller.displayText, bg="white", font=("Arial Bold", 20))
+        checkingAccountBalanceLabel.place(x=350, y=80)
 
-        canvasT3 = Canvas(f4_frame, width=700, height=150, bg='#343332')
-        canvasT3.place(x=50, y=180)
+        recentLogLabel = Label(self, text="Actions:",
+                               padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        recentLogLabel.place(x=365, y=185)
 
-        recentLogLabel = Label(f4_frame, text="Available Features", padx=10, pady=10, bg='#343332', fg='gray',
-                               font='Times 10 bold')
-        recentLogLabel.place(x=335, y=185)
+        # Action Buttons
+        depositWithdraw_button = tk.Button(
+            self, text="Deposit/Withdraw", padx=65, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("moneyMoves"))
+        depositWithdraw_button.place(x=100, y=250)
 
-        checkingAccountLabel = Label(f4_frame, text="Account Balance", padx=10, pady=10, bg='#343332', fg='gray')
-        checkingAccountLabel.place(x=220, y=10)
+        transfer_button = tk.Button(
+            self, text="Transfer To Another User", padx=40, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("TransferFrame"))
+        transfer_button.place(x=100, y=350)
 
-        availableBalanceLabel = Label(f4_frame, text="Available Balance", padx=10, pady=10, bg='#343332', fg='gray',
-                                      font="Italics 7")
-        availableBalanceLabel.place(x=215, y=105)
+        transfer_button = tk.Button(
+            self, text="Recent Transactions", padx=45, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("TransactionsFrame"))
+        transfer_button.place(x=475, y=250)
 
+        PIN_button = tk.Button(
+            self, text="Change PIN", padx=71, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("PINChangeFrame1"))
+        PIN_button.place(x=475, y=350)
 
-        checkingAccountBalanceLabel = Label(self, textvariable=controller.displayText, bg='#343332', fg='gray',
-                                            font="Times 18 bold")
-        checkingAccountBalanceLabel.place(x=225, y=80)
-
-        moneyMovesButton = tk.Button(self, text="Deposit/Withdraw Screen", padx=7, pady=7, fg="white",
-                                     bg='#343332', command=lambda: controller.show_frame("moneyMoves"))
-        moneyMovesButton.place(x=120, y=240)
-
-
-        #transferButton = tk.Button(self, text="Transfer Portal", padx=7, pady=7, fg="white", bg='#343332',
-        #                           command=lambda: raiseFrame(transferFrame))
-        #transferButton.place(x=310, y=240)
-
-        #changePasswordButton = tk.Button(self, text="Change Password", padx=7, pady=7, fg="white", bg='#343332',
-        #                                 command=lambda: raiseFrame(passwordChange))
-        #changePasswordButton.place(x=450, y=240)
-
-        logoutButton = tk.Button(self, text="logout", padx=10, pady=10, fg="white", bg='#da1723',
+        logoutButton = tk.Button(self, text="Logout", padx=10, pady=10, font=("Arial Bold", 10),
                                  command=lambda: [controller.show_frame("StartPage"), ATM.logoutAll()])
         logoutButton.place(x=30, y=10)
 
 
 class LoginPage(tk.Frame):
 
+    
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -242,89 +230,431 @@ class LoginPage(tk.Frame):
         Welcome_name_label.config(text= str(ATM.currUser.name))
         root.show_frame("WelcomePage")
 
-
 class moneyMoves(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        depoWithFrame = LabelFrame(self, width=800, height=400)
-        depoWithFrame.pack(fill="both", expand=1)
+        money_frame = LabelFrame(self, width=800, height=480)
+        money_frame.pack(fill="both", expand=1)
 
-        canvasM = Canvas(depoWithFrame, width=800, height=400, bg='#75706F')
-        canvasM.place(x=0, y=0)
+        money_canvas = Canvas(self, width=800, height=480, bg="white")
+        money_canvas.place(x=0, y=0)
 
-        moneyTransfer = Label(depoWithFrame, text="Would you like to deposit or withdraw?",
-                              padx=10, pady=10, fg="black", font="Italics 15", bg='#75706F')
-        moneyTransfer.place(x=225, y=20)
+        balanceLabel = Label(
+            self, text="Available Balance", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        balanceLabel.place(x=260, y=10)
 
-        moneyInputLabel = Label(depoWithFrame, text="How much?",
-                                padx=10, pady=10, fg="black", font="Italics 15", bg='#75706F')
-        moneyInputLabel.place(x=325, y=120)
+        checkingAccountBalanceLabel = Label(
+            self, textvariable=controller.displayText, bg="white", font=("Arial Bold", 20))
+        checkingAccountBalanceLabel.place(x=340, y=80)
 
-        moneyInput = Entry(depoWithFrame, width=23, fg='black', borderwidth=2)
-        moneyInput.place(x=320, y=175)
+        moneyTransfer = Label(self, text="Select A Transfer Option:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=280, y=175)
 
-        doneButton2 = tk.Button(depoWithFrame, text="Submit", padx=17, pady=17, fg="white", bg='#343332',
-                                command=lambda: moneymoves())
-        doneButton2.place(x=600, y=300)
+        deposit_button = tk.Button(
+            self, text="Deposit", padx=70, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("DepositFrame"))
+        deposit_button.place(x=150, y=300)
 
-        backButton = tk.Button(depoWithFrame, text="Back", padx=17, pady=17, fg="white", bg='#343332',
-                               command=lambda: controller.show_frame("Dashboard"))
-        backButton.place(x=100, y=300)
+        withdraw_button = tk.Button(
+            self, text="Withdraw", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("WithdrawFrame"))
+        withdraw_button.place(x=475, y=300)
 
-        options = [
-            "Deposit",
-            "Withdraw"
-        ]
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
 
-        myCombo = ttk.Combobox(depoWithFrame, value=options)
-        myCombo.current(0)
-        myCombo.pack(pady=80)
 
-        def moneymoves():
+class DepositFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        deposit_frame = LabelFrame(self, width=800, height=480)
+        deposit_frame.pack(fill="both", expand=1)
+
+        deposit_canvas = Canvas(self, width=800, height=480, bg="white")
+        deposit_canvas.place(x=0, y=0)
+
+        balanceLabel = Label(
+            self, text="Available Balance", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        balanceLabel.place(x=260, y=10)
+
+        checkingAccountBalanceLabel = Label(
+            self, textvariable=controller.displayText, bg="white", font=("Arial Bold", 20))
+        checkingAccountBalanceLabel.place(x=340, y=80)
+
+        moneyTransfer = Label(self, text="Amount to Deposit:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=300, y=175)
+
+        amount_entry = Entry(self, width=20, fg='black',
+                             font=('Arial 15'), borderwidth=2)
+        amount_entry.place(x=290, y=240)
+
+        submit_button = tk.Button(
+            self, text="Confirm", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: deposit())
+        submit_button.place(x=310, y=300)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def deposit():
             """
-            Handles the deposit/withdraw functionality
+             Handles the deposit/withdraw functionality
             """
-            if ATM.currUser.loginStatus:
-                money = moneyInput.get()
-                balancePreMoneyMove = ATM.currUser.balance
-                if myCombo.get() == "Deposit":
-                    try:
-                        ATM.currUser.deposit(float(money))
-                    except ValueError:
-                        messagebox.showerror("Error",
-                                            "Make sure that you are: Putting in only integers and that integer is greater than 0 and less than 999999999999")
-                else:
-                    try:
-                        ATM.currUser.withdraw(float(money))
-                    except ValueError:
-                        messagebox.showerror("Error",
-                                            "Make sure that you are: Putting in only integers and that integer is greater than 0 and not greater than your account balance")
+            money = amount_entry.get()
+            try:
+                ATM.currUser.deposit(float(money))
+                update_p2_label(self)
+                ATM.updateBalance()
+                controller.show_frame("Dashboard")
+            except ValueError:
+                messagebox.showerror("Error",
+                                     "Invalid Input")
+            amount_entry.delete(0, END)
 
-                if balancePreMoneyMove == ATM.currUser.balance:
-                    moneyInput.delete(0, END)
-                else:
+        def update_p2_label(self):
+            self.controller.displayText.set(
+                "${:,.2f}".format(ATM.currUser.balance))
+
+
+class WithdrawFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        withdraw_frame = LabelFrame(self, width=800, height=480)
+        withdraw_frame.pack(fill="both", expand=1)
+
+        withdraw_canvas = Canvas(self, width=800, height=480, bg="white")
+        withdraw_canvas.place(x=0, y=0)
+
+        balanceLabel = Label(
+            self, text="Available Balance", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        balanceLabel.place(x=260, y=10)
+
+        checkingAccountBalanceLabel = Label(
+            self, textvariable=controller.displayText, bg="white", font=("Arial Bold", 20))
+        checkingAccountBalanceLabel.place(x=340, y=80)
+
+        moneyTransfer = Label(self, text="Amount to Withdraw:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=290, y=175)
+
+        amount_entry = Entry(self, width=20, fg='black',
+                             font=('Arial 15'), borderwidth=2)
+        amount_entry.place(x=290, y=240)
+
+        submit_button = tk.Button(
+            self, text="Confirm", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: withdraw())
+        submit_button.place(x=310, y=300)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def withdraw():
+            """
+             Handles the deposit/withdraw functionality
+            """
+            money = amount_entry.get()
+            try:
+                ATM.currUser.withdraw(float(money))
+                update_p2_label(self)
+                ATM.updateBalance()
+                controller.show_frame("Dashboard")
+            except ValueError:
+                messagebox.showerror("Error",
+                                     "Invalid Input")
+            amount_entry.delete(0, END)
+
+        def update_p2_label(self):
+            self.controller.displayText.set(
+                "${:,.2f}".format(ATM.currUser.balance))
+
+
+class TransferFrame(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        transfer_frame = LabelFrame(self, width=800, height=480)
+        transfer_frame.pack(fill="both", expand=1)
+
+        transfer_canvas = Canvas(self, width=800, height=480, bg="white")
+        transfer_canvas.place(x=0, y=0)
+
+        balanceLabel = Label(
+            self, text="Available Balance", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        balanceLabel.place(x=260, y=10)
+
+        checkingAccountBalanceLabel = Label(
+            self, textvariable=controller.displayText, bg="white", font=("Arial Bold", 20))
+        checkingAccountBalanceLabel.place(x=340, y=80)
+
+        moneyTransfer = Label(self, text="Account Number of Recipient:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=270, y=150)
+
+        # Entry Fields
+        accountNum_entry = Entry(
+            self, width=20, fg='black', font=('Arial 15'), borderwidth=2)
+        amount_entry = Entry(self, width=20, fg='black',
+                             font=('Arial 15'), borderwidth=2)
+        accountNum_entry.place(x=290, y=200)
+        amount_entry.place(x=290, y=300)
+
+        moneyTransfer = Label(self, text="Amount to be Transferred:",
+                              padx=10, pady=10, bg="white", font=("Arial Bold", 15))
+        moneyTransfer.place(x=270, y=250)
+
+        submit_button = tk.Button(
+            self, text="Confirm", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: transfer())
+        submit_button.place(x=310, y=390)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def transfer():
+            """
+             Handles the deposit/withdraw functionality
+            """
+            recipient = accountNum_entry.get()
+            money = amount_entry.get()
+            try:
+                if(str(recipient) != str(ATM.currUser.cardNum)):
+                    ATM.currUser.transfer(money, recipient)
+                    update_p2_label(self)
                     ATM.updateBalance()
-                    self.update_p2_label()
-                    moneyInput.delete(0, END)
                     controller.show_frame("Dashboard")
+                else:
+                    messagebox.showerror("Error",
+                                         "Cannot Transfer to yourself")
+            except ValueError:
+                messagebox.showerror("Error",
+                                     "Invalid Input")
+            except Exception:
+                accountNum_entry.delete(0, END)
+                messagebox.showerror("Error", "Invalid Account Number")
+            amount_entry.delete(0, END)
+            accountNum_entry.delete(0, END)
 
-    def update_p2_label(self):
-        self.controller.displayText.set("${:,.2f}".format(ATM.currUser.balance))
+        def update_p2_label(self):
+            self.controller.displayText.set(
+                "${:,.2f}".format(ATM.currUser.balance))
 
 
+class TransactionsFrame(tk.Frame):
 
-# End of GUI
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        transaction_frame = LabelFrame(self, width=800, height=480)
+        transaction_frame.pack(fill="both", expand=1)
+
+        transaction_canvas = Canvas(self, width=800, height=480, bg="white")
+        transaction_canvas.place(x=0, y=0)
+
+        header_label = Label(
+            self, text="Recent Transactions", padx=10, pady=10, bg="white", font=("Arial Bold", 25))
+        header_label.place(x=245, y=10)
+
+        heading1_label = Label(
+            self, text="Amount:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        heading1_label.place(x=250, y=100)
+
+        heading2_label = Label(
+            self, text="Initiated By:", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        heading2_label.place(x=450, y=100)
+
+        # Transaction Labels
+        t1_amount_label = Label(
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t1_amount_label.place(x=250, y=150)
+
+        t1_User_label = Label(
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t1_User_label.place(x=450, y=150)
+
+        t2_amount_label = Label(
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t2_amount_label.place(x=250, y=200)
+
+        t2_User_label = Label(
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t2_User_label.place(x=450, y=200)
+
+        t3_amount_label = Label(
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t3_amount_label.place(x=250, y=250)
+
+        t3_User_label = Label(
+            self, text="--", padx=10, pady=10, bg="white", font=("Arial Bold", 10)
+        )
+        t3_User_label.place(x=450, y=250)
+
+        submit_button = tk.Button(
+            self, text="OK", padx=60, pady=18, fg="white", bg='#343332', font=("Arial Bold", 10),
+            command=lambda: controller.show_frame("Dashboard"))
+        submit_button.place(x=340, y=390)
+
+
+class PINChangeFrame1(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        PIN_frame = LabelFrame(self, width=800, height=480)
+        PIN_frame.pack(fill="both", expand=1)
+
+        PIN_canvas = Canvas(self, width=800, height=480, bg="white")
+        PIN_canvas.place(x=0, y=0)
+
+        Secondary_label = Label(self, text="Enter Current PIN",
+                                bg='#FEFEFE', font=("Arial Bold", 15))
+        Secondary_label.place(x=295, y=145)
+
+        viewPassBtn = tk.Button(self, text="Show", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
+                                command=lambda: togglePassword())
+        viewPassBtn.place(x=575, y=180)
+
+        password = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
+        password.place(x=290, y=205)
+
+        nextButton = tk.Button(self, text="Next", padx=55, pady=30, font=("Arial Bold", 10),
+                               command=lambda: checkPIN())
+        nextButton.place(x=315, y=380)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def togglePassword():
+            """
+            Allows user to toggle between show/hide password in the input box
+            """
+            if password.cget("show") == '*':
+                password.config(show='')
+                viewPassBtn.config(text='Hide')
+            else:
+                password.config(show='*')
+                viewPassBtn.config(text='Show')
+
+        def checkPIN():
+            input = password.get()
+            if(input == ATM.currUser.PIN):
+                controller.show_frame("PINChangeFrame2")
+            else:
+                messagebox.showerror("Input Error", "Incorrect PIN")
+            password.delete(0, END)
+
+
+class PINChangeFrame2(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        PIN_frame = LabelFrame(self, width=800, height=480)
+        PIN_frame.pack(fill="both", expand=1)
+
+        PIN_canvas = Canvas(self, width=800, height=480, bg="white")
+        PIN_canvas.place(x=0, y=0)
+
+        Secondary_label = Label(self, text="Enter New PIN",
+                                bg='#FEFEFE', font=("Arial Bold", 15))
+        Secondary_label.place(x=295, y=100)
+
+        newPIN_1 = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
+        newPIN_1.place(x=290, y=150)
+
+        confirm_label = Label(self, text="Confirm Your New PIN",
+                              bg='#FEFEFE', font=("Arial Bold", 15))
+        confirm_label.place(x=295, y=200)
+
+        newPIN_2 = Entry(self, show="*", width=20, fg='black',
+                         font=('Arial 15'), borderwidth=2)
+        newPIN_2.place(x=290, y=250)
+
+        viewPassBtn = tk.Button(self, text="Show", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
+                                command=lambda: togglePassword())
+        viewPassBtn.place(x=575, y=180)
+
+        nextButton = tk.Button(self, text="Done", padx=55, pady=30, font=("Arial Bold", 10),
+                               command=lambda: checkPIN())
+        nextButton.place(x=315, y=380)
+
+        backButton = tk.Button(self, text="Cancel", padx=10, pady=10, font=("Arial Bold", 10),
+                               command=lambda: [controller.show_frame("Dashboard")])
+        backButton.place(x=30, y=10)
+
+        def togglePassword():
+            """
+            Allows user to toggle between show/hide password in the input box
+            """
+            if newPIN_1.cget("show") == '*':
+                newPIN_1.config(show='')
+                newPIN_2.config(show='')
+                viewPassBtn.config(text='Hide PIN')
+            else:
+                newPIN_1.config(show='*')
+                newPIN_2.config(show='*')
+                viewPassBtn.config(text='Show PIN')
+
+        def checkPIN():
+            PIN_1 = newPIN_1.get()
+            PIN_2 = newPIN_2.get()
+            if(PIN_1 == ATM.currUser.PIN):
+                messagebox.showerror(
+                    "Input Error", "New PIN is the same as the current PIN")
+            elif(PIN_1 != PIN_2):
+                messagebox.showerror("Input Error", "PINs don't match")
+            elif(len(PIN_1) > 10):
+                messagebox.showerror(
+                    "Input Error", "New PIN is too long. 9 digit max")
+            elif(not PIN_1.isdigit()):
+                messagebox.showerror(
+                    "Input Error", "PIN must be made up of digits")
+            else:
+                ATM.currUser.changePassword(PIN_1)
+                messagebox.showinfo("Success", "PIN has been updated")
+                controller.show_frame("Dashboard")
+            newPIN_1.delete(0, END)
+            newPIN_2.delete(0, END)
+
 
 def login(cardUID):
     ATM.logoutAll()
     expectedCardNum = ATM.get_key(cardUID)
-    ATM.login(expectedCardNum) 
+    ATM.login(expectedCardNum)
+    root.displayText.set("${:,.2f}".format(ATM.currUser.balance))
+ 
 
 
 if __name__ == "__main__":
     root = Controller()
     root.mainloop()
-    GPIO.cleanup()
