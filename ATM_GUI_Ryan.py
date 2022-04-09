@@ -436,25 +436,29 @@ class TransferFrame(tk.Frame):
              Handles the deposit/withdraw functionality
             """
             recipient = accountNum_entry.get()
-            money = amount_entry.get()
-            usr_money_str = "-" + "${:,.2f}".format(float(money))
-            recipient_money_str = "+" + "${:,.2f}".format(float(money))
-            try:
-                if(str(recipient) != str(ATM.currUser.cardNum)):
-                    ATM.currUser.transfer(money, recipient)
-                    update_p2_label(self)
-                    ATM.updateBalance()
-                    ATM.newTransaction(ATM.currUser.cardNum, usr_money_str)
-                    ATM.newTransaction(recipient, recipient_money_str)
-                    controller.show_frame("Dashboard")
-                else:
+            if(ATM.userExists(recipient)):
+                try:
+                    money = amount_entry.get()
+                    usr_money_str = "-" + "${:,.2f}".format(float(money))
+                    recipient_money_str = "+" + "${:,.2f}".format(float(money))
+                
+                    if(str(recipient) != str(ATM.currUser.cardNum)):
+                        ATM.currUser.transfer(money, recipient)
+                        update_p2_label(self)
+                        ATM.updateBalance()
+                        ATM.newTransaction(ATM.currUser.cardNum, usr_money_str)
+                        ATM.newTransaction(recipient, recipient_money_str)
+                        controller.show_frame("Dashboard")
+                    else:
+                        messagebox.showerror("Error",
+                                            "Cannot Transfer to yourself")
+                except ValueError:
                     messagebox.showerror("Error",
-                                         "Cannot Transfer to yourself")
-            except ValueError:
-                messagebox.showerror("Error",
-                                     "Invalid Input")
-            except Exception:
-                accountNum_entry.delete(0, END)
+                                        "Invalid Input")
+                except Exception:
+                    accountNum_entry.delete(0, END)
+                    messagebox.showerror("Error", "Invalid Input")
+            else:
                 messagebox.showerror("Error", "Invalid Account Number")
             amount_entry.delete(0, END)
             accountNum_entry.delete(0, END)
