@@ -48,13 +48,13 @@ def createTable():
                       balance real,
                       loginStatus text
                   )""")
-    if(not userExists("Ryan")):
+    if(not userExists(35001)):
         createAccount("Ryan", 35001, 1234, 1500.0)
-    if(not userExists("Logan")):
+    if(not userExists(35002)):
         createAccount("Logan", 35002, 1234, 1500.0)
-    if(not userExists("Selmir")):
+    if(not userExists(35003)):
         createAccount("Selmir", 35003, 1234, 1500.0)
-    if(not userExists("Dr. Nandigam")):
+    if(not userExists(35004)):
         createAccount("Dr. Nandigam", 35004, 1234, 1500.0)
 
 
@@ -65,49 +65,50 @@ def createTransactionTable():
     db = sqlite3.connect('user_info.db')
     c = db.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS transactions(
-                        name text,
+                        cardNum text,
                         t1 text,
                         t2 text,
                         t3 text
                         )""")
-    if (userExists("Ryan")):
-        createTransactionLog("Ryan", 0, 0, 0)
-    if (userExists("Logan")):
-        createTransactionLog("Logan", 0, 0, 0)
-    if (userExists("Selmir")):
-        createTransactionLog("Selmir", 0, 0, 0)
-    if (userExists("Dr. Nandigam")):
-        createTransactionLog("Dr. Nandigam", 0, 0, 0)
+    if (userExists(35001)):
+        createTransactionLog(35001, 0, 0, 0)
+    if (userExists(35002)):
+        createTransactionLog(35002, 0, 0, 0)
+    if (userExists(35003)):
+        createTransactionLog(35003, 0, 0, 0)
+    if (userExists(35004)):
+        createTransactionLog(35004, 0, 0, 0)
     db.commit()
     c.close()
     db.close()
 
 
-def createTransactionLog(name, t1, t2, t3):
+def createTransactionLog(cardNum, t1, t2, t3):
     """
     Takes information about users and adds them to the transactions table
     """
     db = sqlite3.connect('user_info.db')
     c = db.cursor()
-    c.execute("INSERT INTO transactions VALUES(?,?,?,?)", (name, t1, t2, t3))
+    c.execute("INSERT INTO transactions VALUES(?,?,?,?)",
+              (cardNum, t1, t2, t3))
     db.commit()
     c.close()
     db.close()
 
 
-def newTransaction(name, amount):
+def newTransaction(cardNum, amount):
     """
     Takes in a values from the ATM and adds it to the current users transaction table
     """
     db = sqlite3.connect('user_info.db')
     c = db.cursor()
-    c.execute("SELECT t1 FROM transactions WHERE name=?", (name,))
+    c.execute("SELECT t1 FROM transactions WHERE cardNum=?", (cardNum,))
     t1 = c.fetchone()[0]
-    c.execute("SELECT t2 FROM transactions WHERE name=?", (name,))
+    c.execute("SELECT t2 FROM transactions WHERE cardNum=?", (cardNum,))
     t2 = c.fetchone()[0]
-    c.execute("UPDATE transactions SET t1=? WHERE name=?", (amount, name))
-    c.execute("UPDATE transactions SET t2=? WHERE name=?", (t1, name))
-    c.execute("UPDATE transactions SET t3=? WHERE name=?", (t2, name))
+    c.execute("UPDATE transactions SET t1=? WHERE cardNum=?", (amount, cardNum))
+    c.execute("UPDATE transactions SET t2=? WHERE cardNum=?", (t1, cardNum))
+    c.execute("UPDATE transactions SET t3=? WHERE cardNum=?", (t2, cardNum))
     db.commit()
     c.close()
     db.close()
@@ -213,33 +214,6 @@ def updateBalance():
     db.close()
 
 
-# TODO: Change to forgotPIN(name, currPIN, newPIN)
-def forgotPassword(userID, PIN, newPassword):
-    """
-    Allows a user to change their password by confirming their PIN number
-
-    :param userID: The userID of the user wanted to change their password
-    :type userID: str
-    :param PIN: The PIN number associated with the given userID
-    :type PIN: str
-    :param newPassword: The user's desired new password
-    :type newPassword: str
-    """
-    db = sqlite3.connect('user_info.db')
-    c = db.cursor()
-    c.execute("SELECT PIN FROM users WHERE userID=?", (userID,))
-    usrPIN = c.fetchone()[0]
-
-    if PIN == usrPIN:
-        c.execute("UPDATE users SET password=? WHERE userID=?",
-                  (newPassword, userID,))
-        db.commit()
-    else:
-        raise ValueError
-    c.close()
-    db.close()
-
-
 def userExists(cardNum):
     """
     Checks if the given userID exists in the database
@@ -251,7 +225,7 @@ def userExists(cardNum):
     db = sqlite3.connect('user_info.db')
     c = db.cursor()
     c.execute("SELECT cardNum FROM users")
-    (c.execute("SELECT exists(SELECT name FROM users where cardNum=?)", (cardNum,)))
+    (c.execute("SELECT exists(SELECT cardNum FROM users where cardNum=?)", (cardNum,)))
     [exists] = c.fetchone()
 
     return exists
