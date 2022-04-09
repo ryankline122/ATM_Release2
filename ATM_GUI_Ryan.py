@@ -97,18 +97,18 @@ class WelcomePage(tk.Frame):
             """
             if password.cget("show") == '*':
                 password.config(show='')
-                viewPassBtn.config(text='Hide Password')
+                viewPassBtn.config(text='Hide')
             else:
                 password.config(show='*')
-                viewPassBtn.config(text='Show Password')
+                viewPassBtn.config(text='Show')
 
         Secondary_label = Label(self, text="Please Enter Your PIN",
                                 bg='#FEFEFE', font=("Arial Bold", 15))
         Secondary_label.place(x=295, y=145)
 
-        viewPassBtn = tk.Button(self, text="Show Password", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
+        viewPassBtn = tk.Button(self, text="Show", padx=25, pady=15, fg="white", bg='#343332', font=("Arial Bold", 10),
                                 command=lambda: togglePassword())
-        viewPassBtn.place(x=325, y=250)
+        viewPassBtn.place(x=350, y=250)
 
         password = Entry(self, show="*", width=20, fg='black',
                          font=('Arial 15'), borderwidth=2)
