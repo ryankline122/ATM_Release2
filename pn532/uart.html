@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ATM_Release2.pn532.uart API documentation</title>
+<meta name="description" content="This module will let you communicate with a PN532 RFID/NFC chip
+using UART (ttyS0) on the Raspberry Pi." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ATM_Release2.pn532.uart</code></h1>
+</header>
+<section id="section-intro">
+<p>This module will let you communicate with a PN532 RFID/NFC chip
+using UART (ttyS0) on the Raspberry Pi.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Waveshare PN532 NFC Hat control library.
+# Author: Yehui from Waveshare
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2015-2018 Adafruit Industries
+# Copyright (c) 2019 Waveshare
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the &#34;Software&#34;), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+&#34;&#34;&#34;
+This module will let you communicate with a PN532 RFID/NFC chip
+using UART (ttyS0) on the Raspberry Pi.
+&#34;&#34;&#34;
+
+
+import time
+import serial
+import RPi.GPIO as GPIO
+from .pn532 import PN532, BusyError
+
+
+# pylint: disable=bad-whitespace
+DEV_SERIAL          = &#39;/dev/ttyS0&#39;
+BAUD_RATE           = 115200
+
+
+class PN532_UART(PN532):
+    &#34;&#34;&#34;Driver for the PN532 connected over UART. Pass in a hardware UART device.
+    Optional IRQ pin (not used), reset pin and debugging output. 
+    &#34;&#34;&#34;
+    def __init__(self, dev=DEV_SERIAL, baudrate=BAUD_RATE,
+                irq=None, reset=None, debug=False):
+        &#34;&#34;&#34;Create an instance of the PN532 class using UART
+        before running __init__, you should
+        1.  disable serial login shell
+        2.  enable serial port hardware
+        using &#39;sudo raspi-config&#39; --&gt; &#39;Interfacing Options&#39; --&gt; &#39;Serial&#39;
+        &#34;&#34;&#34;
+
+        self.debug = debug
+        self._gpio_init(irq=irq, reset=reset)
+        self._uart = serial.Serial(dev, baudrate)
+        if not self._uart.is_open:
+            raise RuntimeError(&#39;cannot open {0}&#39;.format(dev))
+        super().__init__(debug=debug, reset=reset)
+
+    def _gpio_init(self, reset=None,irq=None):
+        self._irq = irq
+        GPIO.setmode(GPIO.BCM)
+        if reset:
+            GPIO.setup(reset, GPIO.OUT)
+            GPIO.output(reset, True)
+        if irq:
+            GPIO.setup(irq, GPIO.IN)
+
+    def _reset(self, pin):
+        &#34;&#34;&#34;Perform a hardware reset toggle&#34;&#34;&#34;
+        GPIO.output(pin, True)
+        time.sleep(0.1)
+        GPIO.output(pin, False)
+        time.sleep(0.5)
+        GPIO.output(pin, True)
+        time.sleep(0.1)
+
+    def _wakeup(self):
+        &#34;&#34;&#34;Send any special commands/data to wake up PN532&#34;&#34;&#34;
+        self._uart.write(b&#39;\x55\x55\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&#39;) # wake up!
+        self.SAM_configuration()
+
+    def _wait_ready(self, timeout=0.001):
+        &#34;&#34;&#34;Wait for response frame, up to `timeout` seconds&#34;&#34;&#34;
+        timestamp = time.monotonic()
+        while (time.monotonic() - timestamp) &lt; timeout:
+            if self._uart.in_waiting:
+                return True
+            else:
+                time.sleep(0.05)  # lets ask again soon!
+        # Timed out!
+        return False
+
+    def _read_data(self, count):
+        &#34;&#34;&#34;Read a specified count of bytes from the PN532.&#34;&#34;&#34;
+        frame = self._uart.read(min(self._uart.in_waiting, count))
+        if not frame:
+            raise BusyError(&#34;No data read from PN532&#34;)
+        if self.debug:
+            print(&#34;Reading: &#34;, [hex(i) for i in frame])
+        else:
+            time.sleep(0.005)
+        return frame
+
+    def _write_data(self, framebytes):
+        &#34;&#34;&#34;Write a specified count of bytes to the PN532&#34;&#34;&#34;
+        self._uart.read(self._uart.in_waiting)    # clear FIFO queue of UART
+        self._uart.write(framebytes)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="ATM_Release2.pn532.uart.PN532_UART"><code class="flex name class">
+<span>class <span class="ident">PN532_UART</span></span>
+<span>(</span><span>dev='/dev/ttyS0', baudrate=115200, irq=None, reset=None, debug=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Driver for the PN532 connected over UART. Pass in a hardware UART device.
+Optional IRQ pin (not used), reset pin and debugging output. </p>
+<p>Create an instance of the PN532 class using UART
+before running <strong>init</strong>, you should
+1.
+disable serial login shell
+2.
+enable serial port hardware
+using 'sudo raspi-config' &ndash;&gt; 'Interfacing Options' &ndash;&gt; 'Serial'</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PN532_UART(PN532):
+    &#34;&#34;&#34;Driver for the PN532 connected over UART. Pass in a hardware UART device.
+    Optional IRQ pin (not used), reset pin and debugging output. 
+    &#34;&#34;&#34;
+    def __init__(self, dev=DEV_SERIAL, baudrate=BAUD_RATE,
+                irq=None, reset=None, debug=False):
+        &#34;&#34;&#34;Create an instance of the PN532 class using UART
+        before running __init__, you should
+        1.  disable serial login shell
+        2.  enable serial port hardware
+        using &#39;sudo raspi-config&#39; --&gt; &#39;Interfacing Options&#39; --&gt; &#39;Serial&#39;
+        &#34;&#34;&#34;
+
+        self.debug = debug
+        self._gpio_init(irq=irq, reset=reset)
+        self._uart = serial.Serial(dev, baudrate)
+        if not self._uart.is_open:
+            raise RuntimeError(&#39;cannot open {0}&#39;.format(dev))
+        super().__init__(debug=debug, reset=reset)
+
+    def _gpio_init(self, reset=None,irq=None):
+        self._irq = irq
+        GPIO.setmode(GPIO.BCM)
+        if reset:
+            GPIO.setup(reset, GPIO.OUT)
+            GPIO.output(reset, True)
+        if irq:
+            GPIO.setup(irq, GPIO.IN)
+
+    def _reset(self, pin):
+        &#34;&#34;&#34;Perform a hardware reset toggle&#34;&#34;&#34;
+        GPIO.output(pin, True)
+        time.sleep(0.1)
+        GPIO.output(pin, False)
+        time.sleep(0.5)
+        GPIO.output(pin, True)
+        time.sleep(0.1)
+
+    def _wakeup(self):
+        &#34;&#34;&#34;Send any special commands/data to wake up PN532&#34;&#34;&#34;
+        self._uart.write(b&#39;\x55\x55\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&#39;) # wake up!
+        self.SAM_configuration()
+
+    def _wait_ready(self, timeout=0.001):
+        &#34;&#34;&#34;Wait for response frame, up to `timeout` seconds&#34;&#34;&#34;
+        timestamp = time.monotonic()
+        while (time.monotonic() - timestamp) &lt; timeout:
+            if self._uart.in_waiting:
+                return True
+            else:
+                time.sleep(0.05)  # lets ask again soon!
+        # Timed out!
+        return False
+
+    def _read_data(self, count):
+        &#34;&#34;&#34;Read a specified count of bytes from the PN532.&#34;&#34;&#34;
+        frame = self._uart.read(min(self._uart.in_waiting, count))
+        if not frame:
+            raise BusyError(&#34;No data read from PN532&#34;)
+        if self.debug:
+            print(&#34;Reading: &#34;, [hex(i) for i in frame])
+        else:
+            time.sleep(0.005)
+        return frame
+
+    def _write_data(self, framebytes):
+        &#34;&#34;&#34;Write a specified count of bytes to the PN532&#34;&#34;&#34;
+        self._uart.read(self._uart.in_waiting)    # clear FIFO queue of UART
+        self._uart.write(framebytes)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="ATM_Release2.pn532.pn532.PN532" href="pn532.html#ATM_Release2.pn532.pn532.PN532">PN532</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="ATM_Release2.pn532.pn532.PN532" href="pn532.html#ATM_Release2.pn532.pn532.PN532">PN532</a></b></code>:
+<ul class="hlist">
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.SAM_configuration" href="pn532.html#ATM_Release2.pn532.pn532.PN532.SAM_configuration">SAM_configuration</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.call_function" href="pn532.html#ATM_Release2.pn532.pn532.PN532.call_function">call_function</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.get_firmware_version" href="pn532.html#ATM_Release2.pn532.pn532.PN532.get_firmware_version">get_firmware_version</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.mifare_classic_authenticate_block" href="pn532.html#ATM_Release2.pn532.pn532.PN532.mifare_classic_authenticate_block">mifare_classic_authenticate_block</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.mifare_classic_read_block" href="pn532.html#ATM_Release2.pn532.pn532.PN532.mifare_classic_read_block">mifare_classic_read_block</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.mifare_classic_write_block" href="pn532.html#ATM_Release2.pn532.pn532.PN532.mifare_classic_write_block">mifare_classic_write_block</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.ntag2xx_read_block" href="pn532.html#ATM_Release2.pn532.pn532.PN532.ntag2xx_read_block">ntag2xx_read_block</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.ntag2xx_write_block" href="pn532.html#ATM_Release2.pn532.pn532.PN532.ntag2xx_write_block">ntag2xx_write_block</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.read_gpio" href="pn532.html#ATM_Release2.pn532.pn532.PN532.read_gpio">read_gpio</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.read_passive_target" href="pn532.html#ATM_Release2.pn532.pn532.PN532.read_passive_target">read_passive_target</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.tg_init_as_target" href="pn532.html#ATM_Release2.pn532.pn532.PN532.tg_init_as_target">tg_init_as_target</a></code></li>
+<li><code><a title="ATM_Release2.pn532.pn532.PN532.write_gpio" href="pn532.html#ATM_Release2.pn532.pn532.PN532.write_gpio">write_gpio</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ATM_Release2.pn532" href="index.html">ATM_Release2.pn532</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ATM_Release2.pn532.uart.PN532_UART" href="#ATM_Release2.pn532.uart.PN532_UART">PN532_UART</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

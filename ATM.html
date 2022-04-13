@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ATM_Release2.ATM API documentation</title>
+<meta name="description" content="Module for all backend functionality of the ATM Application …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ATM_Release2.ATM</code></h1>
+</header>
+<section id="section-intro">
+<p>Module for all backend functionality of the ATM Application.</p>
+<h2 id="functions">Functions</h2>
+<p>createTable()</p>
+<p>createAccount(string, string, string, string, float, string)</p>
+<p>inUse()</p>
+<p>login(string, string)</p>
+<p>logout()</p>
+<p>updateBalance()</p>
+<p>forgotPassword(string, string, string)</p>
+<p>userExists(string)</p>
+<p>printData()</p>
+<p>logoutAll()</p>
+<p>deleteAll()</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Module for all backend functionality of the ATM Application.
+
+Functions:
+    createTable()\n
+    createAccount(string, string, string, string, float, string)\n
+    inUse()\n
+    login(string, string)\n
+    logout()\n
+    updateBalance()\n
+    forgotPassword(string, string, string)\n
+    userExists(string)\n
+    printData()\n
+    logoutAll()\n
+    deleteAll()\n
+&#34;&#34;&#34;
+import sqlite3
+from User import User
+
+currUser = User(None, None, None, None, None)
+MAX_BALANCE = 999999999999
+
+cards = {
+    &#34;admin&#34;: &#34;0x10x230x450x67&#34;,
+    35001: &#34;0x40x130x840xb20x6f0x6f0x81&#34;,
+    35002: &#34;0x40x270x6c0xb20x6f0x6f0x80&#34;,
+    35003: &#34;0x40xd60xf20xb20x6f0x6f0x80&#34;,
+    35004: &#34;0x40x490x6f0xb20x6f0x6f0x81&#34;,
+}
+
+
+def get_key(val):
+    for key, value in cards.items():
+        if val == value:
+            return key
+
+
+def createTable():
+    &#34;&#34;&#34;
+    Creates a SQLite database to store user data if one does not already exist
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;&#34;&#34;CREATE TABLE IF NOT EXISTS users(
+                      name text,
+                      cardNum integer,
+                      PIN text,
+                      balance real,
+                      loginStatus text
+                  )&#34;&#34;&#34;)
+    if(not userExists(35001)):
+        createAccount(&#34;Ryan&#34;, 35001, 1234, 1500.0)
+    if(not userExists(35002)):
+        createAccount(&#34;Logan&#34;, 35002, 1234, 1500.0)
+    if(not userExists(35003)):
+        createAccount(&#34;Selmir&#34;, 35003, 1234, 1500.0)
+    if(not userExists(35004)):
+        createAccount(&#34;Dr. Nandigam&#34;, 35004, 1234, 1500.0)
+
+
+def createTransactionTable():
+    &#34;&#34;&#34;
+    Creates a SQLite table for recent transactions of users
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;&#34;&#34;CREATE TABLE IF NOT EXISTS transactions(
+                        cardNum text,
+                        t1 text,
+                        t2 text,
+                        t3 text
+                        )&#34;&#34;&#34;)
+    if (userExists(35001)):
+        createTransactionLog(35001, 0, 0, 0)
+    if (userExists(35002)):
+        createTransactionLog(35002, 0, 0, 0)
+    if (userExists(35003)):
+        createTransactionLog(35003, 0, 0, 0)
+    if (userExists(35004)):
+        createTransactionLog(35004, 0, 0, 0)
+    db.commit()
+    c.close()
+    db.close()
+
+
+def createTransactionLog(cardNum, t1, t2, t3):
+    &#34;&#34;&#34;
+    Takes information about users and adds them to the transactions table
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;INSERT INTO transactions VALUES(?,?,?,?)&#34;,
+              (cardNum, t1, t2, t3))
+    db.commit()
+    c.close()
+    db.close()
+
+
+def newTransaction(cardNum, amount):
+    &#34;&#34;&#34;
+    Takes in a values from the ATM and adds it to the current users transaction table
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;SELECT t1 FROM transactions WHERE cardNum=?&#34;, (cardNum,))
+    t1 = c.fetchone()[0]
+    c.execute(&#34;SELECT t2 FROM transactions WHERE cardNum=?&#34;, (cardNum,))
+    t2 = c.fetchone()[0]
+    c.execute(&#34;UPDATE transactions SET t1=? WHERE cardNum=?&#34;, (amount, cardNum))
+    c.execute(&#34;UPDATE transactions SET t2=? WHERE cardNum=?&#34;, (t1, cardNum))
+    c.execute(&#34;UPDATE transactions SET t3=? WHERE cardNum=?&#34;, (t2, cardNum))
+    db.commit()
+    c.close()
+    db.close()
+
+
+def createAccount(name, cardNum, PIN, balance):
+    &#34;&#34;&#34;
+    Creates a new entry in the database with the given parameters
+
+        :param name: Name of the user
+        :type name: str
+        :param userID: The userID to be associated with the user
+        :type userID: str
+        :param password: The password to be associated with the user
+        :type password: str
+        :param PIN: A 4-digit number to be associated with the user
+        :type PIN: int
+        :param balance: Represents the users starting balance
+        :type balance: float
+
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    usr = User(name, cardNum, PIN, balance, &#34;False&#34;)
+    c.execute(&#34;INSERT INTO users VALUES(?,?,?,?,?)&#34;,
+              (usr.name, usr.cardNum, usr.PIN, usr.balance, usr.loginStatus))
+    db.commit()
+    c.close()
+    db.close()
+
+
+def inUse():
+    &#34;&#34;&#34;
+    Gives the current use status of the ATM\n
+    :return: Boolean
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(
+        &#34;SELECT exists(SELECT name FROM users where loginStatus=?)&#34;, (&#34;True&#34;,))
+    [exists] = c.fetchone()
+    return exists
+
+
+def login(cardNum):
+    &#34;&#34;&#34;
+    Sets the currUser parameters to the info of the user logging in
+
+    :param userID: The userID of the user logging in
+    :type userID: str
+    :param password: The password of the user logging in
+    :type password: str
+
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(
+        &#34;UPDATE users SET loginStatus = &#39;True&#39; WHERE cardNum =?&#34;, (cardNum,))
+    db.commit()
+    c.execute(&#34;SELECT name FROM users where cardNum =?&#34;, (cardNum,))
+    name = &#39;,&#39;.join(c.fetchone())
+    c.execute(&#34;SELECT balance FROM users where cardNum =?&#34;, (cardNum,))
+    balance = c.fetchone()[0]
+    c.execute(&#34;SELECT PIN FROM users where cardNum =?&#34;, (cardNum,))
+    PIN = c.fetchone()[0]
+
+    currUser.name = name
+    currUser.cardNum = cardNum
+    currUser.PIN = PIN
+    currUser.balance = balance
+    currUser.loginStatus = True
+
+    c.close()
+    db.close()
+
+
+def logout():
+    &#34;&#34;&#34;
+    Sets currUser&#39;s login status to &#34;False&#34; and calls updateBalance()
+    &#34;&#34;&#34;
+    updateBalance()
+    
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;UPDATE users SET loginStatus =? WHERE cardNum=?&#34;,
+              (currUser.loginStatus, currUser.cardNum,))
+    db.commit()
+    c.close()
+    db.close()
+
+    currUser.name = None
+    currUser.cardNum = None
+    currUser.PIN = None
+    currUser.balance = None
+    currUser.loginStatus = None
+    
+
+
+def updateBalance():
+    &#34;&#34;&#34;
+     Updates the balance of the current user in the database
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;UPDATE users SET balance =? WHERE cardNum =?&#34;,
+              (currUser.balance, currUser.cardNum,))
+    db.commit()
+    c.close()
+    db.close()
+
+
+def userExists(cardNum):
+    &#34;&#34;&#34;
+    Checks if the given userID exists in the database
+
+    :param userID: The userID to search for
+    :type userID: str
+    :return: Boolean
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;SELECT cardNum FROM users&#34;)
+    (c.execute(&#34;SELECT exists(SELECT cardNum FROM users where cardNum=?)&#34;, (cardNum,)))
+    [exists] = c.fetchone()
+
+    return exists
+
+
+# DEBUGGING FUNCTIONS
+
+def printData():
+    &#34;&#34;&#34;
+    FOR DEBUGGING: Prints all user data to the console
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#34;user_info.db&#34;)
+    c = db.cursor()
+    c.execute(&#34;SELECT * FROM users&#34;)
+    print(c.fetchall())
+    c.execute(&#34;SELECT * FROM transactions&#34;)
+    print(c.fetchall())
+    c.close()
+    db.close()
+
+
+def logoutAll():
+    &#34;&#34;&#34;
+    FOR DEBUGGING: Logs out all users
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#34;user_info.db&#34;)
+    c = db.cursor()
+    c.execute(&#34;UPDATE users SET loginStatus =? where loginStatus =?&#34;,
+              (&#34;False&#34;, &#34;True&#34;,))
+    db.commit()
+    c.close()
+    db.close()
+
+
+def deleteAll():
+    &#34;&#34;&#34;
+    FOR DEBUGGING: Erases all user data
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#39;DELETE FROM users&#39;)
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="ATM_Release2.ATM.createAccount"><code class="name flex">
+<span>def <span class="ident">createAccount</span></span>(<span>name, cardNum, PIN, balance)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a new entry in the database with the given parameters</p>
+<pre><code>:param name: Name of the user
+:type name: str
+:param userID: The userID to be associated with the user
+:type userID: str
+:param password: The password to be associated with the user
+:type password: str
+:param PIN: A 4-digit number to be associated with the user
+:type PIN: int
+:param balance: Represents the users starting balance
+:type balance: float
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def createAccount(name, cardNum, PIN, balance):
+    &#34;&#34;&#34;
+    Creates a new entry in the database with the given parameters
+
+        :param name: Name of the user
+        :type name: str
+        :param userID: The userID to be associated with the user
+        :type userID: str
+        :param password: The password to be associated with the user
+        :type password: str
+        :param PIN: A 4-digit number to be associated with the user
+        :type PIN: int
+        :param balance: Represents the users starting balance
+        :type balance: float
+
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    usr = User(name, cardNum, PIN, balance, &#34;False&#34;)
+    c.execute(&#34;INSERT INTO users VALUES(?,?,?,?,?)&#34;,
+              (usr.name, usr.cardNum, usr.PIN, usr.balance, usr.loginStatus))
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.createTable"><code class="name flex">
+<span>def <span class="ident">createTable</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a SQLite database to store user data if one does not already exist</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def createTable():
+    &#34;&#34;&#34;
+    Creates a SQLite database to store user data if one does not already exist
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;&#34;&#34;CREATE TABLE IF NOT EXISTS users(
+                      name text,
+                      cardNum integer,
+                      PIN text,
+                      balance real,
+                      loginStatus text
+                  )&#34;&#34;&#34;)
+    if(not userExists(35001)):
+        createAccount(&#34;Ryan&#34;, 35001, 1234, 1500.0)
+    if(not userExists(35002)):
+        createAccount(&#34;Logan&#34;, 35002, 1234, 1500.0)
+    if(not userExists(35003)):
+        createAccount(&#34;Selmir&#34;, 35003, 1234, 1500.0)
+    if(not userExists(35004)):
+        createAccount(&#34;Dr. Nandigam&#34;, 35004, 1234, 1500.0)</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.createTransactionLog"><code class="name flex">
+<span>def <span class="ident">createTransactionLog</span></span>(<span>cardNum, t1, t2, t3)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes information about users and adds them to the transactions table</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def createTransactionLog(cardNum, t1, t2, t3):
+    &#34;&#34;&#34;
+    Takes information about users and adds them to the transactions table
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;INSERT INTO transactions VALUES(?,?,?,?)&#34;,
+              (cardNum, t1, t2, t3))
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.createTransactionTable"><code class="name flex">
+<span>def <span class="ident">createTransactionTable</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a SQLite table for recent transactions of users</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def createTransactionTable():
+    &#34;&#34;&#34;
+    Creates a SQLite table for recent transactions of users
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;&#34;&#34;CREATE TABLE IF NOT EXISTS transactions(
+                        cardNum text,
+                        t1 text,
+                        t2 text,
+                        t3 text
+                        )&#34;&#34;&#34;)
+    if (userExists(35001)):
+        createTransactionLog(35001, 0, 0, 0)
+    if (userExists(35002)):
+        createTransactionLog(35002, 0, 0, 0)
+    if (userExists(35003)):
+        createTransactionLog(35003, 0, 0, 0)
+    if (userExists(35004)):
+        createTransactionLog(35004, 0, 0, 0)
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.deleteAll"><code class="name flex">
+<span>def <span class="ident">deleteAll</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>FOR DEBUGGING: Erases all user data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deleteAll():
+    &#34;&#34;&#34;
+    FOR DEBUGGING: Erases all user data
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#39;DELETE FROM users&#39;)
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.get_key"><code class="name flex">
+<span>def <span class="ident">get_key</span></span>(<span>val)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_key(val):
+    for key, value in cards.items():
+        if val == value:
+            return key</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.inUse"><code class="name flex">
+<span>def <span class="ident">inUse</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives the current use status of the ATM</p>
+<p>:return: Boolean</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inUse():
+    &#34;&#34;&#34;
+    Gives the current use status of the ATM\n
+    :return: Boolean
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(
+        &#34;SELECT exists(SELECT name FROM users where loginStatus=?)&#34;, (&#34;True&#34;,))
+    [exists] = c.fetchone()
+    return exists</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.login"><code class="name flex">
+<span>def <span class="ident">login</span></span>(<span>cardNum)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the currUser parameters to the info of the user logging in</p>
+<p>:param userID: The userID of the user logging in
+:type userID: str
+:param password: The password of the user logging in
+:type password: str</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def login(cardNum):
+    &#34;&#34;&#34;
+    Sets the currUser parameters to the info of the user logging in
+
+    :param userID: The userID of the user logging in
+    :type userID: str
+    :param password: The password of the user logging in
+    :type password: str
+
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(
+        &#34;UPDATE users SET loginStatus = &#39;True&#39; WHERE cardNum =?&#34;, (cardNum,))
+    db.commit()
+    c.execute(&#34;SELECT name FROM users where cardNum =?&#34;, (cardNum,))
+    name = &#39;,&#39;.join(c.fetchone())
+    c.execute(&#34;SELECT balance FROM users where cardNum =?&#34;, (cardNum,))
+    balance = c.fetchone()[0]
+    c.execute(&#34;SELECT PIN FROM users where cardNum =?&#34;, (cardNum,))
+    PIN = c.fetchone()[0]
+
+    currUser.name = name
+    currUser.cardNum = cardNum
+    currUser.PIN = PIN
+    currUser.balance = balance
+    currUser.loginStatus = True
+
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.logout"><code class="name flex">
+<span>def <span class="ident">logout</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets currUser's login status to "False" and calls updateBalance()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def logout():
+    &#34;&#34;&#34;
+    Sets currUser&#39;s login status to &#34;False&#34; and calls updateBalance()
+    &#34;&#34;&#34;
+    updateBalance()
+    
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;UPDATE users SET loginStatus =? WHERE cardNum=?&#34;,
+              (currUser.loginStatus, currUser.cardNum,))
+    db.commit()
+    c.close()
+    db.close()
+
+    currUser.name = None
+    currUser.cardNum = None
+    currUser.PIN = None
+    currUser.balance = None
+    currUser.loginStatus = None</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.logoutAll"><code class="name flex">
+<span>def <span class="ident">logoutAll</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>FOR DEBUGGING: Logs out all users</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def logoutAll():
+    &#34;&#34;&#34;
+    FOR DEBUGGING: Logs out all users
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#34;user_info.db&#34;)
+    c = db.cursor()
+    c.execute(&#34;UPDATE users SET loginStatus =? where loginStatus =?&#34;,
+              (&#34;False&#34;, &#34;True&#34;,))
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.newTransaction"><code class="name flex">
+<span>def <span class="ident">newTransaction</span></span>(<span>cardNum, amount)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes in a values from the ATM and adds it to the current users transaction table</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def newTransaction(cardNum, amount):
+    &#34;&#34;&#34;
+    Takes in a values from the ATM and adds it to the current users transaction table
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;SELECT t1 FROM transactions WHERE cardNum=?&#34;, (cardNum,))
+    t1 = c.fetchone()[0]
+    c.execute(&#34;SELECT t2 FROM transactions WHERE cardNum=?&#34;, (cardNum,))
+    t2 = c.fetchone()[0]
+    c.execute(&#34;UPDATE transactions SET t1=? WHERE cardNum=?&#34;, (amount, cardNum))
+    c.execute(&#34;UPDATE transactions SET t2=? WHERE cardNum=?&#34;, (t1, cardNum))
+    c.execute(&#34;UPDATE transactions SET t3=? WHERE cardNum=?&#34;, (t2, cardNum))
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.printData"><code class="name flex">
+<span>def <span class="ident">printData</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>FOR DEBUGGING: Prints all user data to the console</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def printData():
+    &#34;&#34;&#34;
+    FOR DEBUGGING: Prints all user data to the console
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#34;user_info.db&#34;)
+    c = db.cursor()
+    c.execute(&#34;SELECT * FROM users&#34;)
+    print(c.fetchall())
+    c.execute(&#34;SELECT * FROM transactions&#34;)
+    print(c.fetchall())
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.updateBalance"><code class="name flex">
+<span>def <span class="ident">updateBalance</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the balance of the current user in the database</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateBalance():
+    &#34;&#34;&#34;
+     Updates the balance of the current user in the database
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;UPDATE users SET balance =? WHERE cardNum =?&#34;,
+              (currUser.balance, currUser.cardNum,))
+    db.commit()
+    c.close()
+    db.close()</code></pre>
+</details>
+</dd>
+<dt id="ATM_Release2.ATM.userExists"><code class="name flex">
+<span>def <span class="ident">userExists</span></span>(<span>cardNum)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the given userID exists in the database</p>
+<p>:param userID: The userID to search for
+:type userID: str
+:return: Boolean</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def userExists(cardNum):
+    &#34;&#34;&#34;
+    Checks if the given userID exists in the database
+
+    :param userID: The userID to search for
+    :type userID: str
+    :return: Boolean
+    &#34;&#34;&#34;
+    db = sqlite3.connect(&#39;user_info.db&#39;)
+    c = db.cursor()
+    c.execute(&#34;SELECT cardNum FROM users&#34;)
+    (c.execute(&#34;SELECT exists(SELECT cardNum FROM users where cardNum=?)&#34;, (cardNum,)))
+    [exists] = c.fetchone()
+
+    return exists</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ATM_Release2" href="index.html">ATM_Release2</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="ATM_Release2.ATM.createAccount" href="#ATM_Release2.ATM.createAccount">createAccount</a></code></li>
+<li><code><a title="ATM_Release2.ATM.createTable" href="#ATM_Release2.ATM.createTable">createTable</a></code></li>
+<li><code><a title="ATM_Release2.ATM.createTransactionLog" href="#ATM_Release2.ATM.createTransactionLog">createTransactionLog</a></code></li>
+<li><code><a title="ATM_Release2.ATM.createTransactionTable" href="#ATM_Release2.ATM.createTransactionTable">createTransactionTable</a></code></li>
+<li><code><a title="ATM_Release2.ATM.deleteAll" href="#ATM_Release2.ATM.deleteAll">deleteAll</a></code></li>
+<li><code><a title="ATM_Release2.ATM.get_key" href="#ATM_Release2.ATM.get_key">get_key</a></code></li>
+<li><code><a title="ATM_Release2.ATM.inUse" href="#ATM_Release2.ATM.inUse">inUse</a></code></li>
+<li><code><a title="ATM_Release2.ATM.login" href="#ATM_Release2.ATM.login">login</a></code></li>
+<li><code><a title="ATM_Release2.ATM.logout" href="#ATM_Release2.ATM.logout">logout</a></code></li>
+<li><code><a title="ATM_Release2.ATM.logoutAll" href="#ATM_Release2.ATM.logoutAll">logoutAll</a></code></li>
+<li><code><a title="ATM_Release2.ATM.newTransaction" href="#ATM_Release2.ATM.newTransaction">newTransaction</a></code></li>
+<li><code><a title="ATM_Release2.ATM.printData" href="#ATM_Release2.ATM.printData">printData</a></code></li>
+<li><code><a title="ATM_Release2.ATM.updateBalance" href="#ATM_Release2.ATM.updateBalance">updateBalance</a></code></li>
+<li><code><a title="ATM_Release2.ATM.userExists" href="#ATM_Release2.ATM.userExists">userExists</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
